@@ -1,0 +1,440 @@
+/* Activity Logs Premium Stylesheet */
+
+.activity-logs-container {
+  padding: 8px 12px;
+  animation: fadeIn 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header & Graphic Section */
+.activity-logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.header-text-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.5px;
+}
+
+.header-text-content p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 400;
+}
+
+.abstract-network-graphic {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Filter & Control Bar */
+.activity-logs-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 260px;
+  max-width: 320px;
+}
+
+.search-input-wrapper input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.search-input-wrapper input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(6, 74, 145, 0.12);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+/* Dropdowns actions */
+.filter-dropdowns-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.custom-dropdown-container {
+  position: relative;
+}
+
+.dropdown-trigger-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.dropdown-trigger-btn:hover {
+  background-color: var(--border-color);
+}
+
+.dropdown-trigger-btn.active-filter {
+  border-color: var(--primary);
+  background-color: var(--pill-bg);
+  color: var(--pill-text);
+}
+
+.trigger-icon {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.trigger-chevron {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+/* Dropdown Menu Overlay */
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 1000;
+  width: 180px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  padding: 6px;
+  animation: slideDown 0.18s ease-out;
+}
+
+.custom-dropdown-menu.right-aligned {
+  left: auto;
+  right: 0;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.dropdown-item.selected {
+  background-color: var(--pill-bg);
+  color: var(--pill-text);
+}
+
+/* Logs Table Section */
+.logs-table-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 10px 20px -8px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.logs-table-scroll-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.logs-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.logs-data-table th {
+  padding: 16px 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.015);
+}
+
+.logs-data-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  color: var(--text-primary);
+}
+
+.log-table-row {
+  transition: background-color 0.2s ease;
+}
+
+.log-table-row:hover {
+  background-color: rgba(0, 0, 0, 0.012);
+}
+
+/* Endpoint badges */
+.endpoint-cell {
+  width: 140px;
+}
+
+.endpoint-tag {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: -0.2px;
+}
+
+/* URL Cell & Copy ID trigger on row hover */
+.url-cell {
+  max-width: 320px;
+}
+
+.url-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.url-text-value {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.hover-copy-id-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  visibility: hidden;
+  padding: 4px 8px;
+  background-color: var(--border-color);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  outline: none;
+}
+
+.hover-copy-id-btn:hover {
+  background-color: var(--text-secondary);
+  color: var(--bg-card);
+}
+
+.log-table-row:hover .hover-copy-id-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Status cell styling */
+.status-cell {
+  width: 140px;
+}
+
+.status-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.status-pill.completed {
+  color: #10b981;
+}
+
+.status-pill.failed {
+  color: #ef4444;
+}
+
+.status-pill.pending {
+  color: #f59e0b;
+}
+
+/* Credits Cell */
+.credits-cell {
+  width: 120px;
+}
+
+.credits-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Time Cell */
+.time-cell {
+  width: 160px;
+}
+
+.time-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.time-date {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 13.5px;
+}
+
+.time-hour {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Actions Cell */
+.actions-cell {
+  width: 100px;
+  text-align: right;
+}
+
+.actions-header-cell {
+  text-align: right !important;
+}
+
+.download-log-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--text-secondary);
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.download-log-btn:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+/* Table Empty state */
+.logs-empty-state-cell {
+  padding: 60px 20px !important;
+  text-align: center;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--pill-bg);
+  color: var(--pill-text);
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.empty-state-content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+}
+
+.empty-state-content p {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Dark mode theme overrides */
+.dark-theme .logs-table-card {
+  background-color: var(--bg-card);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dark-theme .log-table-row:hover {
+  background-color: rgba(255, 255, 255, 0.015);
+}
+
+.dark-theme .logs-data-table th {
+  background-color: rgba(255, 255, 255, 0.005);
+}
+
+.dark-theme .download-log-btn {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.dark-theme .download-log-btn:hover {
+  background-color: var(--primary);
+  color: #ffffff;
+}

@@ -1,0 +1,206 @@
+/* Sidebar Footer */
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid #e5e7eb;
+  padding: 12px 8px;
+  background-color: #ffffff;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+}
+
+.user-avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #e5e7eb;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.user-email-text {
+  font-size: 10px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+.user-profile-info {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  max-width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.collapsed .user-profile-info {
+  opacity: 0;
+  max-width: 0;
+}
+
+.sidebar.collapsed .user-profile {
+  justify-content: center;
+  padding: 8px 0;
+  gap: 0;
+}
+
+/* Dark Theme Overrides for Sidebar Footer */
+.dark-theme .sidebar-bottom {
+  border-top: 1px solid #1e1e24 !important;
+  background-color: #0c0c0e !important;
+}
+
+.dark-theme .user-profile {
+  color: #e4e4e7 !important;
+}
+
+.dark-theme .user-avatar-circle {
+  background-color: #1c1c22 !important;
+  color: #e4e4e7 !important;
+}
+
+.dark-theme .user-email-text {
+  color: #71717a !important;
+}
+
+/* ==========================================================================
+   ACCOUNT POPOVER STYLING
+   ========================================================================== */
+.account-popover .ant-popover-content,
+.account-popover .ant-popover-inner {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.account-popover .ant-popover-arrow {
+  display: none !important;
+}
+
+/* Ensure absolute compliance inside dark theme */
+.dark-theme .account-popover .ant-popover-inner {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.account-menu-card {
+  width: 250px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.dark-theme .account-menu-card {
+  background-color: #0c0c0e !important;
+  color: #ffffff !important;
+  border: 1px solid #1e1e24 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+.account-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+}
+
+.account-menu-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.account-menu-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.account-menu-close-btn:hover {
+  background-color: var(--border);
+  color: var(--text-primary);
+}
+
+.account-menu-divider {
+  height: 1px;
+  background-color: var(--border);
+  width: 100%;
+  margin: 0;
+}
+
+.account-menu-section {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.account-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.account-menu-item:hover {
+  background-color: var(--pill-bg);
+  color: var(--pill-text);
+}
+
+.account-menu-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+  width: 18px;
+  height: 18px;
+}
+
+.account-menu-item:hover .account-menu-item-icon {
+  color: var(--pill-text);
+}

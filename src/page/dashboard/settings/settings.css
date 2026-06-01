@@ -1,0 +1,665 @@
+/* Settings UI Styling Module */
+
+.settings-page-container {
+  padding: 8px 12px;
+  animation: settingsFadeIn 0.35s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@keyframes settingsFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header graphical visual */
+.settings-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.header-text-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.5px;
+}
+
+.header-text-content p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 400;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.abstract-settings-graphic {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+/* Unified Card Container */
+.settings-content-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 10px 20px -8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  min-height: 520px;
+  overflow: hidden;
+}
+
+/* Left Sidebar Menu Navigation */
+.settings-sidebar-nav {
+  width: 220px;
+  border-right: 1px solid var(--border-color);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: rgba(0, 0, 0, 0.005);
+}
+
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 550;
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.settings-nav-item:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Active Nav State - Override with premium Brand Blue */
+.settings-nav-item.active {
+  background-color: rgba(6, 74, 145, 0.07);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.settings-nav-item .nav-icon {
+  font-size: 16px;
+}
+
+/* Right View Workspace Area */
+.settings-view-workspace {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+}
+
+.settings-tab-view {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  animation: settingsFadeIn 0.25s ease-out;
+}
+
+/* Settings block sections */
+.settings-section-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 24px;
+}
+
+.settings-section-block:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.settings-section-block h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.block-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 4px 0;
+}
+
+.block-helper-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Input Wrappers & Forms */
+.row-inputs-wrapper {
+  display: flex;
+  gap: 12px;
+  max-width: 580px;
+}
+
+.row-inputs-wrapper input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.row-inputs-wrapper input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(6, 74, 145, 0.1);
+}
+
+.save-settings-btn {
+  padding: 10px 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-settings-btn:hover {
+  background-color: var(--border-color);
+}
+
+/* Invite Members grid styling */
+.invite-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 130px 140px;
+  gap: 12px;
+  max-width: 680px;
+}
+
+.invite-email-input-wrapper input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.invite-email-input-wrapper input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(6, 74, 145, 0.1);
+}
+
+.invite-send-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  background-color: rgba(6, 74, 145, 0.06);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 13.5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.invite-send-submit-btn:hover {
+  background-color: rgba(6, 74, 145, 0.12);
+}
+
+/* Dropdown styling */
+.custom-dropdown-container {
+  position: relative;
+}
+
+.custom-dropdown-container .dropdown-trigger-btn {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+.custom-dropdown-container .dropdown-trigger-btn:hover {
+  background-color: var(--border-color);
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.custom-dropdown-menu .dropdown-item {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.custom-dropdown-menu .dropdown-item:hover {
+  background-color: var(--border-color);
+}
+
+.custom-dropdown-menu .dropdown-item.selected {
+  background-color: rgba(6, 74, 145, 0.06);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Team Members List row container */
+.team-members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+  max-width: 680px;
+}
+
+.team-member-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  gap: 16px;
+}
+
+.member-avatar-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(6, 74, 145, 0.08);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.member-info-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name-and-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.member-email-primary {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.role-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+.role-badge.admin {
+  background-color: rgba(6, 74, 145, 0.08);
+  color: var(--primary);
+}
+
+.role-badge.member {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--text-secondary);
+}
+
+.member-email-secondary {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.remove-member-btn {
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.remove-member-btn:hover {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* BILLING TAB STYLING */
+
+/* Current Plan Card - Transformed into stunning Translucent Blue Box */
+.current-plan-card-box {
+  background-color: rgba(6, 74, 145, 0.025);
+  border: 1px solid rgba(6, 74, 145, 0.12);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 580px;
+  position: relative;
+}
+
+.plan-detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-detail-top .plan-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.plan-detail-top .plan-price {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.plan-feature-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+}
+
+.plan-feature-row .check-icon {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Premium Primary Blue Upgrade triggers */
+.primary-upgrade-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 24px;
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: fit-content;
+  outline: none;
+}
+
+.primary-upgrade-btn:hover {
+  opacity: 0.92;
+}
+
+.flex-recharge-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 680px;
+  gap: 20px;
+}
+
+.flex-recharge-block .left-info {
+  flex: 1;
+}
+
+/* Coupon history collapsible */
+.coupon-history-collapsible {
+  margin-top: 8px;
+  max-width: 580px;
+}
+
+.toggle-history-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 550;
+  cursor: pointer;
+  padding: 4px 0;
+  outline: none;
+}
+
+.toggle-history-btn:hover {
+  color: var(--text-primary);
+}
+
+.toggle-history-btn .chevron {
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.toggle-history-btn .chevron.open {
+  transform: rotate(180deg);
+}
+
+.coupon-history-list {
+  margin-top: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: rgba(0, 0, 0, 0.005);
+}
+
+.coupon-history-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.coupon-history-row:last-child {
+  border-bottom: none;
+}
+
+.coupon-history-row .code {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--mono);
+}
+
+.coupon-history-row .date {
+  color: var(--text-secondary);
+}
+
+.coupon-history-row .bonus {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.empty-history-text {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* Billing History Table details */
+.billing-table-wrapper {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  max-width: 680px;
+}
+
+.billing-table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.billing-table-wrapper th {
+  background-color: rgba(0, 0, 0, 0.01);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.billing-table-wrapper td {
+  padding: 12px 16px;
+  font-size: 13.5px;
+}
+
+.empty-table-cell {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 32px !important;
+}
+
+/* ADVANCED TAB VIEW DETAILS */
+.advanced-form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 580px;
+}
+
+.advanced-form-layout .form-group-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advanced-form-layout .form-group-item label {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--text-primary);
+}
+
+.advanced-form-layout .form-group-item input {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.advanced-form-layout .form-group-item input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(6, 74, 145, 0.1);
+}
+
+.save-advanced-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 24px;
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: fit-content;
+  margin-top: 8px;
+}
+
+.save-advanced-submit-btn:hover {
+  opacity: 0.92;
+}
+
+/* Dark Theme Overrides */
+.dark-theme .settings-sidebar-nav {
+  background-color: rgba(255, 255, 255, 0.005);
+}
+
+.dark-theme .settings-nav-item.active {
+  background-color: rgba(6, 74, 145, 0.12);
+}
+
+.dark-theme .invite-send-submit-btn {
+  background-color: rgba(6, 74, 145, 0.15);
+}
+
+.dark-theme .invite-send-submit-btn:hover {
+  background-color: rgba(6, 74, 145, 0.25);
+}
+
+.dark-theme .member-avatar-circle {
+  background-color: rgba(6, 74, 145, 0.15);
+}
+
+.dark-theme .role-badge.admin {
+  background-color: rgba(6, 74, 145, 0.15);
+}
+
+.dark-theme .role-badge.member {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.dark-theme .current-plan-card-box {
+  background-color: rgba(6, 74, 145, 0.04);
+  border-color: rgba(6, 74, 145, 0.25);
+}
+
+.dark-theme .billing-table-wrapper th {
+  background-color: rgba(255, 255, 255, 0.005);
+}

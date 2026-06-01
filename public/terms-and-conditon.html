@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service – GcrawlAI by Gramosoft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #064a91;
+      --primary-hover: #0854a3;
+      --bg-page: #ffffff;
+      --bg-card: #f9fafb;
+      --text-primary: #08060d;
+      --text-secondary: #6b6375;
+      --border: #e5e4e7;
+      --accent-bg: rgba(6, 74, 145, 0.05);
+      --accent-border: rgba(6, 74, 145, 0.15);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #4ea5ff;
+        --primary-hover: #73baff;
+        --bg-page: #16171d;
+        --bg-card: #1f2028;
+        --text-primary: #f3f4f6;
+        --text-secondary: #9ca3af;
+        --border: #2e303a;
+        --accent-bg: rgba(78, 165, 255, 0.08);
+        --accent-border: rgba(78, 165, 255, 0.3);
+        --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text-secondary);
+      background: var(--bg-page);
+      line-height: 1.75;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.8);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      header {
+        background: rgba(22, 23, 29, 0.8);
+      }
+    }
+
+    header .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    header .logo-text {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    header .logo-text span {
+      color: var(--primary);
+    }
+
+    header .tagline {
+      font-size: 11px;
+      color: var(--text-secondary);
+      opacity: 0.8;
+      border-left: 1px solid var(--border);
+      padding-left: 12px;
+      margin-left: 4px;
+    }
+
+    .back-btn {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+    }
+
+    .hero {
+      border-bottom: 1px solid var(--border);
+      padding: 80px 40px 60px;
+      text-align: center;
+      background: radial-gradient(circle at top, var(--accent-bg) 0%, transparent 70%);
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 16px;
+    }
+
+    .hero .meta {
+      color: var(--text-secondary);
+      opacity: 0.7;
+      font-size: 13px;
+      margin-top: 16px;
+    }
+
+    .hero .meta span {
+      margin: 0 8px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 40px 100px;
+    }
+
+    .intro-box {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 48px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .intro-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 48px 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h2 .num {
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      h2 .num {
+        color: #111827;
+      }
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 28px 0 10px;
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .highlight-box, .warn-box, .green-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    .highlight-box strong, .warn-box strong, .green-box strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+
+    .green-box {
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .green-box strong {
+      color: #10b981;
+    }
+
+    .warn-box {
+      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.05);
+    }
+
+    .warn-box strong {
+      color: #f59e0b;
+    }
+
+    strong {
+      color: var(--text-primary);
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    a:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+    }
+
+    th {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border);
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(0, 0, 0, 0.01);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.01);
+      }
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s;
+    }
+
+    .contact-card:hover {
+      border-color: var(--primary);
+    }
+
+    .contact-card .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      opacity: 0.7;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .contact-card .value {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 40px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    footer p {
+      margin-bottom: 8px;
+    }
+
+    footer a {
+      color: var(--text-secondary);
+      margin: 0 8px;
+      transition: color 0.2s;
+    }
+
+    footer a:hover {
+      color: var(--primary);
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 40px 20px 80px; }
+      .hero { padding: 60px 20px 40px; }
+      .hero h1 { font-size: 30px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      header { padding: 15px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="logo-container">
+    <img src="/src/assets/Logo.svg" alt="GcrawlAI" style="width: 100px; height: auto" />
+    <div class="tagline">by Gramosoft Private Limited</div>
+  </a>
+  <a href="/" class="back-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    Back to Home
+  </a>
+</header>
+
+<div class="hero">
+  <h1>Terms of Service</h1>
+  <p>Please read these terms carefully before using GcrawlAI. By accessing or using our services, you agree to be bound by these terms.</p>
+  <div class="meta">
+    <span>Last Revised: May 14, 2026</span>
+    <span>·</span>
+    <span>Effective: May 14, 2026</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="intro-box">
+    <strong>Agreement Summary</strong>
+    This Terms of Service Agreement ("Agreement") is between <strong>Gramosoft Private Limited</strong> (CIN: U72900TN2022PTC153168), a company incorporated under the laws of India, operating the GcrawlAI product suite ("Gramosoft," "we," "us," or "our"), and the individual or entity ("you" or "your") accessing or using our web crawling, data extraction, and AI-ready data services (collectively, "Services").
+    <br /><br />
+    <strong>YOU MUST ACCEPT THIS AGREEMENT TO USE GCRAWLAI.</strong> If you do not agree to all terms herein, including our Privacy Policy, you must not use the Services.
+  </div>
+
+  <!-- Section 1 -->
+  <h2><span class="num">1</span> Description of the Services</h2>
+  <p>GcrawlAI is an intelligent web crawling and data extraction API platform developed by Gramosoft Private Limited. It enables users to programmatically crawl websites, extract structured data, and convert publicly accessible web content into LLM-ready, AI-friendly formats for use in research, analytics, automation, and artificial intelligence applications.</p>
+  <p>The Services include, but are not limited to:</p>
+  <ul>
+    <li>Web crawling and scraping APIs (single-page, multi-page, and full-site crawls)</li>
+    <li>SERP data extraction and search result processing</li>
+    <li>Structured data extraction with custom schema support</li>
+    <li>AI/LLM-ready markdown and JSON output formats</li>
+    <li>Proxy rotation and anti-bot bypass infrastructure</li>
+    <li>Developer dashboard, usage analytics, and API key management</li>
+  </ul>
+  <p>We reserve the right to modify, expand, or discontinue any aspect of the Services at our sole discretion, without prior notice. We shall not be liable for any unavailability of the Services at any time or for any period.</p>
+
+  <!-- Section 2 -->
+  <h2><span class="num">2</span> Accessing the Services</h2>
+  <p>Access to GcrawlAI is provided through API keys issued upon account registration. You are responsible for maintaining the confidentiality of your API key(s) and all activities that occur under your account.</p>
+  <h3>2.1 Account Security</h3>
+  <p>You agree to: (a) keep your API keys and login credentials strictly confidential; (b) not share your account access with unauthorised third parties; (c) notify us immediately at <a href="mailto:support@gcrawlai.com">support@gcrawlai.com</a> upon discovering any unauthorised use of your account or any other security breach.</p>
+  <h3>2.2 Account Eligibility</h3>
+  <p>By registering, you represent and warrant that you: (i) have full legal authority to enter into this Agreement; (ii) are at least 18 years of age; and (iii) are not barred from using the Services under any applicable law or previous account suspension.</p>
+  <h3>2.3 Accuracy of Information</h3>
+  <p>You represent and warrant that all registration and billing information you provide is complete, accurate, and current. You are responsible for keeping such information up to date.</p>
+
+  <!-- Section 3 -->
+  <h2><span class="num">3</span> Use License</h2>
+  <h3>3.1 Scope of License</h3>
+  <p>During an active paid subscription, Gramosoft grants you a non-exclusive, non-transferable, worldwide license to access, retrieve, store, analyse, and redistribute — commercially or otherwise — the publicly available data returned through GcrawlAI's APIs ("Licensed Data"), subject to the restrictions in this Agreement.</p>
+  <h3>3.2 Nature of Data</h3>
+  <p>All Licensed Data is sourced solely from publicly accessible locations on the open internet. Gramosoft does not claim proprietary ownership of the underlying third-party information and does not guarantee the completeness, accuracy, or legality of such data in every jurisdiction.</p>
+  <h3>3.3 Data Integrity</h3>
+  <p>You may transform, combine, or present Licensed Data in any manner, <strong>provided you do not modify, fabricate, or misrepresent the information in a way that causes harm to third parties or violates applicable law.</strong></p>
+  <h3>3.4 Termination of License</h3>
+  <p>Your license to receive new Licensed Data terminates automatically upon expiry or cancellation of your subscription. Previously retrieved data may become outdated; continued reliance on it is your sole responsibility.</p>
+  <h3>3.5 Restrictions</h3>
+  <p>You must not:</p>
+  <ul>
+    <li>Sublicense, resell, or redistribute the GcrawlAI platform or API infrastructure itself (as opposed to the output data)</li>
+    <li>Decompile, reverse-engineer, or attempt to extract the source code or proprietary algorithms of GcrawlAI</li>
+    <li>Create competing products or services substantially derived from GcrawlAI's platform</li>
+    <li>Use GcrawlAI to build or train a direct substitute for GcrawlAI's core functionality</li>
+  </ul>
+
+  <!-- Section 4 -->
+  <h2><span class="num">4</span> Intellectual Property</h2>
+  <p>Gramosoft retains all rights, title, and interest in and to the GcrawlAI platform, its underlying technology, codebase, APIs, documentation, branding, and proprietary systems. "GcrawlAI" and "Gramosoft" are trademarks of Gramosoft Private Limited.</p>
+  <p>Nothing in this Agreement shall be construed as transferring any intellectual property rights from Gramosoft to you. Your use of the Services does not grant you any ownership of or rights to our proprietary technology.</p>
+  <p>Gramosoft respects the intellectual property rights of others. If you believe any content accessible through our Services infringes your copyright, please contact us at <a href="mailto:legal@gcrawlai.com">legal@gcrawlai.com</a>.</p>
+  <h3>4.1 User-Generated Content and Feedback</h3>
+  <p>If you submit feedback, suggestions, or feature requests regarding GcrawlAI, you grant Gramosoft a worldwide, irrevocable, royalty-free licence to use and incorporate such feedback without obligation or compensation to you.</p>
+
+  <!-- Section 5 -->
+  <h2><span class="num">5</span> Prohibited Activities</h2>
+  <p>The following activities are strictly prohibited under this Agreement. Violation may result in immediate account suspension or termination:</p>
+  <div class="highlight-box">
+    <ol style="padding-left: 20px;">
+      <li style="margin-bottom: 12px;">Using the Services to crawl websites in violation of those websites' Terms of Service, robots.txt directives, or applicable laws</li>
+      <li style="margin-bottom: 12px;">Collecting, storing, or processing personally identifiable information (PII) of individuals without their explicit consent, in violation of applicable data protection laws including India's Digital Personal Data Protection Act (DPDPA) 2023, GDPR, or CCPA</li>
+      <li style="margin-bottom: 12px;">Using the Services for unlawful surveillance, stalking, tracking, or profiling of individuals</li>
+      <li style="margin-bottom: 12px;">Using the Services for hard background checks or determining eligibility for government licences, financial credit, insurance, employment, or housing in violation of applicable regulations</li>
+      <li style="margin-bottom: 12px;">Using the Services in connection with debt collection, intelligence gathering for government agencies, or any purpose prohibited under the Fair Credit Reporting Act (FCRA) or equivalent Indian legislation</li>
+      <li style="margin-bottom: 12px;">Launching denial-of-service (DoS) attacks, overloading target servers, or engaging in any activity that disrupts or damages third-party web infrastructure</li>
+      <li style="margin-bottom: 12px;">Publishing, distributing, or enabling malware, ransomware, or any malicious code via the Services</li>
+      <li style="margin-bottom: 12px;">Attempting to circumvent rate limits, access controls, or authentication mechanisms of GcrawlAI's infrastructure</li>
+      <li style="margin-bottom: 12px;">Sharing or reselling your API key(s) to third parties without Gramosoft's prior written consent</li>
+      <li style="margin-bottom: 12px;">Using the Services to promote violence, hatred, discrimination, or illegal content based on race, religion, gender, caste, nationality, sexual orientation, or disability</li>
+      <li style="margin-bottom: 12px;">Using the Services for any evidentiary purpose related to criminal prosecution or law enforcement without appropriate legal authority</li>
+      <li style="margin-bottom: 12px;">Using data obtained through GcrawlAI to harm, defame, or disparage any individual or organisation</li>
+    </ol>
+  </div>
+  <p>We reserve the right to investigate suspected violations and take appropriate legal action, including referral to law enforcement authorities.</p>
+
+  <!-- Section 6 -->
+  <h2><span class="num">6</span> Payment Terms</h2>
+  <h3>6.1 Subscription Billing</h3>
+  <p>GcrawlAI is offered on a subscription basis (monthly or annual) as well as pay-as-you-go credit packs, as specified on our pricing page. By subscribing, you authorise Gramosoft or our authorised payment processor (currently Stripe or Razorpay) to charge your nominated payment method in accordance with your selected plan.</p>
+  <h3>6.2 Payment Processing</h3>
+  <p>Payments are processed by third-party payment service providers. Gramosoft is not responsible for payment disputes or chargebacks initiated against the payment processor. Any disputes must be directed to us at <a href="mailto:billing@gcrawlai.com">billing@gcrawlai.com</a> within 15 days of the charge.</p>
+  <h3>6.3 Taxes</h3>
+  <p>All fees are exclusive of applicable taxes. You are responsible for paying all taxes, levies, or duties imposed by applicable authorities, including GST as applicable in India. Gramosoft's GSTIN is <strong>33AAJCG8548F1ZF</strong>. GST invoices will be issued for all Indian customers.</p>
+  <h3>6.4 Plan Upgrades and Downgrades</h3>
+  <p>Upgrades take effect immediately upon payment of the prorated difference. Downgrades take effect at the start of the next billing cycle. No refund is issued for the unused portion of the current billing period upon downgrading.</p>
+  <h3>6.5 Credit Rollover Policy</h3>
+  <div class="warn-box">
+    <strong>⚠ Important</strong>
+    Unused API credits expire at the end of each billing period and do not roll over, unless you are on an annual plan with rollover credits explicitly stated in your plan description.
+  </div>
+  <h3>6.6 No Refunds</h3>
+  <p>Gramosoft does not offer refunds for any payments made once the Services have been rendered or access to a plan has been provided. In the unlikely event that Gramosoft permanently ceases to offer the Services, subscribers will receive a prorated refund for the remaining unused portion of their billing period.</p>
+  <h3>6.7 Cancellation</h3>
+  <p>You may cancel your subscription at any time from your account dashboard. It is your sole responsibility to cancel before the next billing cycle. Access continues until the end of the current paid period, after which no further charges will be made.</p>
+  <h3>6.8 Pricing Changes</h3>
+  <p>Gramosoft reserves the right to revise pricing at any time. We will provide at least 30 days' advance notice of any price increases to existing subscribers.</p>
+
+  <!-- Section 7 -->
+  <h2><span class="num">7</span> Disclaimers and Warranties</h2>
+  <h3>7.1 No Guarantees</h3>
+  <p>GcrawlAI provides raw, publicly available data through automated crawling. We make <strong>no promise or warranty</strong> that the data will achieve any particular business result. The value of the data depends entirely on how you collect, interpret, and apply it.</p>
+  <h3>7.2 As-Is Basis</h3>
+  <p>The Services and all Licensed Data are provided on an <strong>"as is" and "as available"</strong> basis, without any warranty of any kind — express, implied, or statutory — including but not limited to implied warranties of merchantability, fitness for a particular purpose, accuracy, completeness, or non-infringement.</p>
+  <h3>7.3 Third-Party Content</h3>
+  <p>Gramosoft does not create, edit, or validate the content of third-party websites. We are not responsible for the accuracy, legality, or timeliness of any data extracted from third-party sources. You accept all risks associated with relying on such data.</p>
+  <h3>7.4 Service Availability</h3>
+  <p>We do not warrant that the Services will be uninterrupted, error-free, or free from security vulnerabilities. We will endeavour to maintain reasonable uptime and will publish scheduled maintenance notices where practicable.</p>
+
+  <!-- Section 8 -->
+  <h2><span class="num">8</span> Limitation of Liability</h2>
+  <h3>8.1 Exclusion of Damages</h3>
+  <p>To the maximum extent permitted under applicable law, Gramosoft, its directors, officers, employees, affiliates, agents, and licensors shall not be liable for any indirect, incidental, special, consequential, punitive, or exemplary damages, including but not limited to loss of data, loss of profits, loss of business, or business interruption, arising from your use of or inability to use the Services.</p>
+  <h3>8.2 Liability Cap</h3>
+  <p>Gramosoft's total aggregate liability to you for any and all claims arising from or related to this Agreement shall not exceed the total fees paid by you to Gramosoft in the <strong>six (6) months immediately preceding</strong> the event giving rise to the claim.</p>
+  <h3>8.3 Jurisdictional Exceptions</h3>
+  <p>Some jurisdictions do not permit the exclusion or limitation of certain warranties or liabilities. In such jurisdictions, the above limitations apply only to the fullest extent permitted by law.</p>
+
+  <!-- Section 9 -->
+  <h2><span class="num">9</span> Indemnification</h2>
+  <p>You agree to defend, indemnify, and hold harmless Gramosoft Private Limited and its officers, directors, employees, agents, and affiliates from and against any and all third-party claims, liabilities, damages, losses, costs, and expenses (including reasonable legal fees) arising out of or related to:</p>
+  <ul>
+    <li>Your use of the Services in violation of this Agreement</li>
+    <li>Your violation of any applicable law or regulation</li>
+    <li>Your infringement of any third party's intellectual property, privacy, or other rights</li>
+    <li>Data you collect, process, or distribute using GcrawlAI</li>
+  </ul>
+  <p>Gramosoft reserves the right to assume exclusive defence of any matter subject to indemnification by you, at your cost.</p>
+
+  <!-- Section 10 -->
+  <h2><span class="num">10</span> Termination and Suspension</h2>
+  <h3>10.1 Termination by You</h3>
+  <p>You may terminate your account at any time by cancelling your subscription and ceasing use of the Services.</p>
+  <h3>10.2 Termination by Gramosoft</h3>
+  <p>We reserve the right to suspend, restrict, or terminate your account and access to the Services at any time, with or without notice, for reasons including but not limited to:</p>
+  <ul>
+    <li>Violation of any provision of this Agreement</li>
+    <li>Use of the Services in a manner that causes harm to Gramosoft, other users, or third parties</li>
+    <li>Non-payment of fees</li>
+    <li>Any misrepresentation made to Gramosoft</li>
+    <li>Compliance with applicable law or court/regulatory order</li>
+  </ul>
+  <h3>10.3 Effect of Termination</h3>
+  <p>Upon termination, your right to access the Services ceases immediately. Provisions of this Agreement that by their nature should survive termination shall survive, including Sections 4, 7, 8, 9, 11, and 12.</p>
+
+  <!-- Section 11 -->
+  <h2><span class="num">11</span> Data Protection, Privacy &amp; No Data Retention</h2>
+  <p>Gramosoft collects and processes personal data in accordance with our Privacy Policy, available at <a href="/privacy-policy.html">gcrawlai.com/privacy</a>. By using the Services, you acknowledge and consent to our data practices as described therein.</p>
+
+  <h3>11.1 No Data Storage by GcrawlAI</h3>
+  <div class="highlight-box">
+    <strong>GcrawlAI does not store, retain, or log the web data crawled or extracted on your behalf.</strong> All crawled content and API response data is processed in real time and delivered directly to you. Once the API response is returned, no copy of the extracted or crawled data is retained on GcrawlAI's servers.
+  </div>
+  <p>Specifically:</p>
+  <ul>
+    <li><strong>No content storage</strong> — GcrawlAI does not save, archive, or cache the HTML, text, or structured data retrieved from target URLs beyond the duration of the API request-response cycle.</li>
+    <li><strong>No user data profiling</strong> — GcrawlAI does not use your crawled data to build profiles, train models, or derive insights about you or your end users.</li>
+    <li><strong>Request metadata only</strong> — For operational, billing, and rate-limiting purposes, GcrawlAI retains only technical metadata such as API call timestamps, credit usage, endpoint accessed, and HTTP status codes. This metadata does not include the content of your crawled data.</li>
+    <li><strong>You own your data</strong> — All data returned via the GcrawlAI API belongs solely to you. Gramosoft claims no ownership, licence, or rights over the output data you retrieve through the Services.</li>
+  </ul>
+
+  <h3>11.2 Your Data Protection Obligations</h3>
+  <p>You are solely responsible for ensuring that your use of GcrawlAI to collect, process, or store data about individuals complies with all applicable data protection laws, including:</p>
+  <ul>
+    <li>India's <strong>Digital Personal Data Protection Act (DPDPA), 2023</strong></li>
+    <li>The <strong>General Data Protection Regulation (GDPR)</strong> (where applicable)</li>
+    <li>The <strong>California Consumer Privacy Act (CCPA)</strong> (where applicable)</li>
+    <li>Any other applicable national or regional data privacy legislation</li>
+  </ul>
+  <p>Where required, Gramosoft will enter into a Data Processing Agreement (DPA) with enterprise customers on request.</p>
+
+  <!-- Section 12 -->
+  <h2><span class="num">12</span> General Provisions</h2>
+  <h3>12.1 Governing Law and Jurisdiction</h3>
+  <p>This Agreement shall be governed by and construed in accordance with the laws of <strong>India</strong>, without regard to its conflict-of-law principles. Any disputes arising from or related to this Agreement shall be subject to the exclusive jurisdiction of the competent courts in <strong>Chennai, Tamil Nadu, India</strong>.</p>
+  <h3>12.2 Dispute Resolution</h3>
+  <p>Before initiating any formal legal proceedings (except for claims concerning Gramosoft's intellectual property), each party agrees to first attempt to resolve the dispute amicably by providing written notice to the other party. If the dispute is not resolved within <strong>30 days</strong> of such notice, either party may pursue their legal remedies in the courts specified above.</p>
+  <h3>12.3 Modifications to the Agreement</h3>
+  <p>Gramosoft may update these Terms at any time. For material changes, we will provide advance notice via email or a prominent in-platform notice. Continued use of the Services after the effective date of any amendment constitutes your acceptance of the revised Terms.</p>
+  <h3>12.4 Assignment</h3>
+  <p>You may not assign or transfer your rights or obligations under this Agreement without Gramosoft's prior written consent. Gramosoft may assign this Agreement in connection with a merger, acquisition, or sale of all or substantially all of its assets, without your consent.</p>
+  <h3>12.5 Waiver</h3>
+  <p>Failure by either party to enforce any provision of this Agreement shall not constitute a waiver of that party's right to enforce such provision in the future.</p>
+  <h3>12.6 Severability</h3>
+  <p>If any provision of this Agreement is found to be invalid or unenforceable by a court of competent jurisdiction, the remaining provisions shall continue in full force and effect.</p>
+  <h3>12.7 Entire Agreement</h3>
+  <p>This Agreement, together with the Privacy Policy and any applicable Order Form or Enterprise Agreement, constitutes the entire agreement between you and Gramosoft with respect to the Services and supersedes all prior agreements, representations, and understandings.</p>
+  <h3>12.8 Successors and Assigns</h3>
+  <p>This Agreement is binding on and shall inure to the benefit of the parties and their respective successors, heirs, and permitted assigns.</p>
+
+  <!-- Section 13 -->
+  <h2><span class="num">13</span> Contact Us</h2>
+  <p>For any questions, concerns, or notices regarding this Agreement, please reach out to us through the following channels:</p>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div class="label">Legal & Compliance</div>
+      <div class="value"><a href="mailto:legal@gcrawlai.com">legal@gcrawlai.com</a></div>
+    </div>
+    <div class="contact-card">
+      <div class="label">Billing & Payments</div>
+      <div class="value"><a href="mailto:billing@gcrawlai.com">billing@gcrawlai.com</a></div>
+    </div>
+    <div class="contact-card">
+      <div class="label">Technical Support</div>
+      <div class="value"><a href="mailto:support@gcrawlai.com">support@gcrawlai.com</a></div>
+    </div>
+    <div class="contact-card">
+      <div class="label">Registered Office</div>
+      <div class="value">Gramosoft Private Limited, Chennai, Tamil Nadu, India</div>
+    </div>
+    <div class="contact-card">
+      <div class="label">CIN</div>
+      <div class="value">U72900TN2022PTC153168</div>
+    </div>
+    <div class="contact-card">
+      <div class="label">GSTIN</div>
+      <div class="value">33AAJCG8548F1ZF</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>
+    <a href="/">GcrawlAI.com</a> &nbsp;·&nbsp;
+    <a href="/privacy-policy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="https://github.com/GramosoftAI/GcrawlAI">GitHub</a> &nbsp;·&nbsp;
+    <a href="mailto:legal@gcrawlai.com">legal@gcrawlai.com</a>
+  </p>
+  <p>© 2024–2026 Gramosoft Private Limited. All rights reserved. &nbsp;|&nbsp; CIN: U72900TN2022PTC153168</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+/* API Keys Premium CSS Module */
+
+.apikey-page-container {
+    padding: 8px 12px;
+    animation: apikeyFadeIn 0.35s ease-out;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+@keyframes apikeyFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header visual section */
+.apikey-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.header-text-content h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.5px;
+}
+
+.header-text-content p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    font-weight: 400;
+    max-width: 500px;
+    line-height: 1.5;
+}
+
+.abstract-peak-graphic {
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+/* Content Card Box */
+.apikey-content-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 10px 20px -8px rgba(0, 0, 0, 0.02);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card-top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-top-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.create-key-trigger-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: var(--primary);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.create-key-trigger-btn:hover {
+    background-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+.btn-icon {
+    font-size: 14px;
+}
+
+/* Keys list rendering */
+.keys-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.key-item-row-card {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.key-item-row-card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.key-row-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.key-name-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.revoke-key-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.revoke-key-btn:hover {
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Key container */
+.key-token-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 14px;
+    gap: 16px;
+}
+
+.key-token-text {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    color: var(--text-primary);
+    letter-spacing: 0.2px;
+    word-break: break-all;
+}
+
+.key-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.key-action-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.key-action-icon-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--border-color);
+}
+
+.key-meta-info {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Empty Key State design */
+.empty-keys-state {
+    text-align: center;
+    padding: 48px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.empty-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background-color: var(--pill-bg);
+    color: var(--pill-text);
+    margin-bottom: 14px;
+    font-size: 18px;
+}
+
+.empty-keys-state h3 {
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+}
+
+.empty-keys-state p {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 320px;
+}
+
+/* Animated Modal Overlays */
+.modal-backdrop-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: apikeyFadeIn 0.2s ease-out;
+}
+
+.create-key-modal-card {
+    width: 100%;
+    max-width: 440px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    animation: apikeyScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes apikeyScaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 650;
+    color: var(--text-primary);
+}
+
+.modal-close-btn {
+    border: none;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--border-color);
+}
+
+.modal-form-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group-item label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-group-item input {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    outline: none;
+    font-size: 14px;
+    transition: all 0.25s ease;
+}
+
+.form-group-item input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(6, 74, 145, 0.1);
+}
+
+.modal-actions-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.modal-cancel-btn {
+    padding: 9px 16px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 550;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-cancel-btn:hover {
+    background-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.modal-submit-btn {
+    padding: 9px 16px;
+    border: none;
+    background-color: var(--primary);
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-submit-btn:hover {
+    opacity: 0.92;
+}
+
+/* Dark Theme Overrides */
+.dark-theme .create-key-trigger-btn {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.dark-theme .create-key-trigger-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark-theme .key-token-container {
+    background-color: rgba(255, 255, 255, 0.015);
+}
+
+.dark-theme .create-key-modal-card {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
