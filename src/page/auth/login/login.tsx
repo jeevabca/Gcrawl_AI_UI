@@ -4,6 +4,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { ROUTE } from "../../../routes/const";
 import useAxios from "../../../services";
 import Cookies from "js-cookie";
+import { toast } from "react-hot-toast";
 import TerminalBackground from "../../../components/layout/TerminalBackground";
 import "./login.css";
 
@@ -35,6 +36,11 @@ export default function Login() {
     const res = await request({ data: payload });
     console.log("========================res",res)
     if (res) {
+      if (res.status === "error" || res.status === "failed" || res.status_code === 401) {
+        toast.error(res.message);
+        return;
+      }
+      
       Cookies.set("user_email", values.email.trim(), { expires: 1 });
       
       // Explicitly extract the token from different possible API structures
@@ -54,7 +60,7 @@ export default function Login() {
           {/* Header with Logo */}
           <div className="login-header">
             <div className="login-logo-container">
-              <img src="/src/assets/Logo.svg" alt="" style={{ width: "200px", height: "auto" }} />
+              <img src="/Logo.svg" alt="" style={{ width: "200px", height: "auto" }} />
             </div>
           </div>
 

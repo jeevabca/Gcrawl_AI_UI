@@ -53,7 +53,7 @@ export default function ResetPassword() {
         {/* Header with Logo */}
         <div className="reset-password-header">
           <div className="reset-password-logo-container">
-            <img src="../../src/assets/Logo.svg" alt="GcrawlAI" style={{ width: "200px", height: "auto" }} />
+            <img src="/Logo.svg" alt="GcrawlAI" style={{ width: "200px", height: "auto" }} />
           </div>
           <h2 className="reset-password-title">Reset Password</h2>
           <p className="reset-password-subtitle">

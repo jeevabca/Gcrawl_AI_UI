@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useTheme } from "../../../utils/theme";
 
 import { toast } from "react-hot-toast";
 import { ROUTE } from "../../../routes/const";
@@ -12,7 +13,7 @@ import { HiOutlineDocumentMagnifyingGlass } from "react-icons/hi2";
 import { RxActivityLog } from "react-icons/rx";
 import { SiGoogleanalytics } from "react-icons/si";
 
-import SidebarFooter from "../../../page/components/sidebarfooter/sidebarfooter";
+import SidebarFooter from "../../components/sidebarfooter/sidebarfooter";
 import "./sidebar.css";
 
 export default function Sidebar() {
@@ -20,6 +21,7 @@ export default function Sidebar() {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
+  const { isDarkMode } = useTheme();
 
   const currentView = location.pathname === "/dashboard" ? "overview" : location.pathname.replace("/dashboard/", "");
 
@@ -35,7 +37,7 @@ export default function Sidebar() {
     Cookies.remove("token");
     Cookies.remove("user_email");
     toast.success("Logged out successfully");
-    navigate(ROUTE.LOGIN);
+    navigate(ROUTE.LANDING);
   };
 
   // Helper to extract email securely from cookies or JWT token
@@ -74,9 +76,9 @@ export default function Sidebar() {
       {/* Brand Header */}
       <div className="brand" onClick={() => navigate(ROUTE.LANDING)}>
         {isCollapsed ? (
-          <img src="../../src/assets/Logo.svg" alt="GcrawlAI" style={{ width: "50px", height: "auto" }} />
+          <img src={isDarkMode ? "/GcrawlWhiteLogo.svg" : "/Logo.svg"} alt="GcrawlAI" style={{ width: "50px", height: "auto" }} />
         ) : (
-          <img src="../../src/assets/Logo.svg" alt="GcrawlAI" style={{ width: "100px", height: "auto" }} />
+          <img src={isDarkMode ? "/GcrawlWhiteLogo.svg" : "/Logo.svg"} alt="GcrawlAI" style={{ width: "100px", height: "auto" }} />
         )}
       </div>
 

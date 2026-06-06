@@ -65,7 +65,7 @@ export default function Landing() {
         {/* Credit System Pill */}
         <div className="landing-credit-pill">
           <span className="landing-credit-dot"></span>
-          1000 Credits Free
+          500 Requests Free
         </div>
 
         {/* Big Bold Headline */}

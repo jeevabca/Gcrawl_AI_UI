@@ -23,13 +23,13 @@ export default function Navbar({ activePage }: NavbarProps) {
     Cookies.remove("token");
     setIsLoggedIn(false);
     toast.success("Logged out successfully");
-    navigate(ROUTE.LOGIN || "/login");
+    navigate(ROUTE.LANDING);
   };
 
   return (
     <nav className="landing-navbar">
       <div className="landing-logo-group" onClick={() => navigate(ROUTE.LANDING)}>
-        <img src="/src/assets/Logo.svg" alt="GcrawlAI" style={{ width: "100px", height: "auto", cursor: "pointer" }} />
+        <img src="/Logo.svg" alt="GcrawlAI" style={{ width: "100px", height: "auto", cursor: "pointer" }} />
       </div>
 
       <div className="landing-nav-links">

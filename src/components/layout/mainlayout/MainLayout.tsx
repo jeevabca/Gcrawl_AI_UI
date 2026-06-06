@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Layout } from "antd";
 import { toast } from "react-hot-toast";
 import { Outlet, useNavigate } from "react-router-dom";
-import Sidebar from "../sidebar/sidebar";
+import Sidebar from "../../../page/dashboard/sidebar/sidebar";
 import { useTheme } from "../../../utils/theme";
 import Cookies from "js-cookie";
 import { ROUTE } from "../../../routes/const";

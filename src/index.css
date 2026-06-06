@@ -43,6 +43,33 @@
   }
 }
 
+/* Global Dark Theme Overrides applied to .dark-theme selector */
+.dark-theme {
+  /* Core Variables */
+  --text: #9ca3af !important;
+  --text-h: #f3f4f6 !important;
+  --bg: #16171d !important;
+  --border: #2e303a !important;
+  --code-bg: #1f2028 !important;
+  --accent: #c084fc !important;
+  --accent-bg: rgba(192, 132, 252, 0.15) !important;
+  --accent-border: rgba(192, 132, 252, 0.5) !important;
+  --primary: #4ea5ff !important;
+  --social-bg: rgba(47, 48, 58, 0.5) !important;
+  --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px !important;
+
+  /* Dashboard Variables */
+  --bg-page: #000000 !important;
+  --bg-card: #1b1b21 !important;
+  --text-primary: #ffffff !important;
+  --text-secondary: #a1a1aa !important;
+  --border-color: #1e1e24 !important;
+  --navbar-bg: rgba(9, 9, 11, 0.85) !important;
+  --border-navbar: rgba(255, 255, 255, 0.05) !important;
+  --pill-bg: rgba(6, 74, 145, 0.15) !important;
+  --pill-border: rgba(6, 74, 145, 0.3) !important;
+  --pill-text: #3b82f6 !important;
+}
 
 #root {
   width: 100%;
@@ -101,33 +128,7 @@ code {
   font-size: 15px;
   line-height: 135%;
   padding: 4px 8px;
-  background: var(--code-bg);
+
 }
 
-/* Global Dark Theme Overrides applied to .dark-theme selector */
-.dark-theme {
-  /* Core Variables */
-  --text: #9ca3af !important;
-  --text-h: #f3f4f6 !important;
-  --bg: #16171d !important;
-  --border: #2e303a !important;
-  --code-bg: #1f2028 !important;
-  --accent: #c084fc !important;
-  --accent-bg: rgba(192, 132, 252, 0.15) !important;
-  --accent-border: rgba(192, 132, 252, 0.5) !important;
-  --primary: #4ea5ff !important;
-  --social-bg: rgba(47, 48, 58, 0.5) !important;
-  --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px !important;
 
-  /* Dashboard Variables */
-  --bg-page: #000000 !important;
-  --bg-card: #1b1b21 !important;
-  --text-primary: #ffffff !important;
-  --text-secondary: #a1a1aa !important;
-  --border-color: #1e1e24 !important;
-  --navbar-bg: rgba(9, 9, 11, 0.85) !important;
-  --border-navbar: rgba(255, 255, 255, 0.05) !important;
-  --pill-bg: rgba(6, 74, 145, 0.15) !important;
-  --pill-border: rgba(6, 74, 145, 0.3) !important;
-  --pill-text: #3b82f6 !important;
-}

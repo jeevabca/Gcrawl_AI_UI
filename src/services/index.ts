@@ -210,7 +210,11 @@ export default function useAxios<T = any, R = any>({
       const isSuccess =
         response.status === successStatusCode &&
         (response.data?.status ??
-          response.data?.result?.status) !== false;
+          response.data?.result?.status) !== false &&
+        (response.data?.status ??
+          response.data?.result?.status) !== "error" &&
+        (response.data?.status ??
+          response.data?.result?.status) !== "failed";
 
       if (isSuccess) {
         successCb?.();
@@ -251,7 +255,15 @@ export default function useAxios<T = any, R = any>({
       return null;
     } catch (error: any) {
       if (error?.response?.status === 401) {
-        handleSessionExpiry();
+        if (isAuthEndpoint) {
+          toast.error(
+            error?.response?.data?.message ||
+            error?.response?.data?.title ||
+            "Authentication failed"
+          );
+        } else {
+          handleSessionExpiry();
+        }
         return null;
       }
 

@@ -6,7 +6,7 @@ import type { signup } from "./type";
 import useAxios from "../../../services";
 import TerminalBackground from "../../../components/layout/TerminalBackground";
 import Cookies from "js-cookie";
-
+import { toast } from "react-hot-toast";
 
 import "./register.css";
 
@@ -78,8 +78,20 @@ export default function Register() {
       }
     });
     if (res) {
+      if (res.status === "error" || res.status === "failed" || res.status_code === 401) {
+        toast.error(res.message);
+        return;
+      }
+
+      Cookies.set("user_email", signupPayload.email, { expires: 1 });
+
+      const token = res.token || res.access_token || res.result?.token || res.result?.access_token || res.data?.token || res.data?.access_token;
+      if (token) {
+        Cookies.set("token", token, { expires: 1 });
+      }
+
       setIsOtpModalVisible(false);
-      navigate("/auth/login");
+      navigate(ROUTE.LANDING);
     }
   };
 
@@ -97,7 +109,7 @@ export default function Register() {
           {/* Header with Logo */}
           <div className="register-header">
             <div className="register-logo-container">
-              <img src="/src/assets/Logo.svg" alt="" style={{ width: "200px", height: "auto" }} />
+              <img src="/Logo.svg" alt="" style={{ width: "200px", height: "auto" }} />
             </div>
           </div>
 

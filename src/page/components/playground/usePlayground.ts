@@ -4,10 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import useAxios from "../../../services";
-import Cookies from "js-cookie";
-import axios from "axios";
 import { useWebSocket } from "./websocket";
-import { performSearch } from "./searchapi";
 
 /* -------------------------------------------------------------------------- */
 /*                                   TYPES                                    */
@@ -23,8 +20,12 @@ export interface ScrapedPage {
   html?: string;
   screenshot?: string;
   seo?: string;
+  seo_md?: string;
+  seo_json?: any;
+  seo_xlsx_s3_url?: string;
   images?: string;
   links?: string;
+  searchData?: any;
   [key: string]: any;
 }
 
@@ -38,91 +39,7 @@ export interface PlaygroundProps {
 /*                              HELPER UTILITIES                              */
 /* -------------------------------------------------------------------------- */
 
-/** Detect if a value is inline image / data content rather than a file path. */
-const isInlineData = (value: string): boolean => {
-  if (!value || typeof value !== "string") return false;
-  if (value.startsWith("data:")) return true; // data URI
-  if (value.startsWith("/9j/")) return true; // JPEG base64 header
-  if (value.startsWith("iVBOR")) return true; // PNG base64 header
-  if (value.startsWith("R0lGOD")) return true; // GIF base64 header
-  if (value.startsWith("UklGR")) return true; // WebP base64 header
-  // If it's longer than 500 chars and doesn't look like a path, treat as inline
-  if (value.length > 500 && !value.startsWith("/") && !value.startsWith("http"))
-    return true;
-  return false;
-};
 
-/** Extract content from a server response based on the requested type. */
-const parseFileContent = (res: any, type: string): string => {
-  if (!res) return "";
-  const payload = res.data ? res.data : res;
-
-  // --- Screenshot: extract the raw base64 / data-URI and return early ---
-  // Handled separately because the generic extraction below checks
-  // `payload.markdown` first, which can grab the wrong field.
-  if (type === "screenshot") {
-    let shot: any =
-      (typeof payload === "string" ? payload : null) ||
-      payload.screenshot ||
-      payload.image ||
-      payload.content ||
-      payload;
-
-    // Unwrap one more level if it's still an object
-    if (typeof shot === "object" && shot !== null) {
-      shot = shot.screenshot || shot.image || shot.content || shot;
-    }
-    // If still an object, try to JSON-stringify as last resort
-    if (typeof shot === "object" && shot !== null) {
-      try {
-        shot = JSON.stringify(shot);
-      } catch (_) {
-        shot = "";
-      }
-    }
-    // Return raw string — renderResultTabContent will add the data-URI prefix
-    return typeof shot === "string" ? shot : "";
-  }
-
-  // --- All other types use the generic extraction pipeline ---
-  let content =
-    payload.markdown ||
-    payload.image ||
-    payload.screenshot ||
-    payload.content ||
-    payload.json ||
-    payload.xlsx ||
-    payload.seo_md ||
-    payload.markdown_content ||
-    payload.seo_xlsx ||
-    payload;
-
-  if (typeof content === "object" && content !== null) {
-    if (type === "seo")
-      content = content.json || content.seo_json || content.content || content;
-    if (type === "markdown")
-      content = content.markdown || content.content || content;
-    if (type === "html")
-      content = content.html || content.engineHtml || content.content || content;
-    if (type === "images")
-      content = content.json || content.content || content;
-  }
-
-  if (typeof content === "object" && content !== null) {
-    try {
-      content =
-        content.content || content.markdown || JSON.stringify(content, null, 2);
-    } catch (e) {
-      /* empty */
-    }
-  }
-
-  if (type === "seo" && typeof content === "object") {
-    content = JSON.stringify(content, null, 2);
-  }
-
-  return content;
-};
 
 /* -------------------------------------------------------------------------- */
 /*                               CUSTOM HOOK                                  */
@@ -153,12 +70,22 @@ export default function usePlayground({
   const [showProxyModal, setShowProxyModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showMapPopup, setShowMapPopup] = useState(false);
+  const [showSearchPopup, setShowSearchPopup] = useState(false);
+
+  /* ---- Search params ---- */
+  const [searchLimit, setSearchLimit] = useState(10);
 
   /* ---- Map params ---- */
   const [mapLimit, setMapLimit] = useState(70);
   const [mapSameDomainOnly, setMapSameDomainOnly] = useState(false);
   const [mapIncludeSubdomains, setMapIncludeSubdomains] = useState(false);
   const [mapProxyGeo, setMapProxyGeo] = useState("IN");
+
+  /* ---- Crawl params ---- */
+  const [crawlMaxPages, setCrawlMaxPages] = useState(10);
+  const [crawlSameDomainOnly, setCrawlSameDomainOnly] = useState(true);
+  const [crawlIncludeSubdomains, setCrawlIncludeSubdomains] = useState(false);
+  const [showCrawlPopup, setShowCrawlPopup] = useState(false);
 
   /* ---- Scrape / Crawl params ---- */
   const [proxyGeo, setProxyGeo] = useState("default");
@@ -224,10 +151,11 @@ export default function usePlayground({
     showSuccessMsg: true,
   });
 
-  const [getPathRequest] = useAxios<any, any>({
-    endpoint: "GET_PATH",
-    hideErrorMsg: true,
-  });
+  // const [getContent] = useAxios<any, any>({
+  //   endpoint: "GET_CRAWL_CONTENT",
+  //   hideErrorMsg: true,
+  // });
+
 
   const ChooseUrl = (name : string) =>{
    switch(name){
@@ -235,13 +163,10 @@ export default function usePlayground({
       return scrapeRequest;
     case "crawl":
       return crawlRequest;
-
     case "map":
       return MapRequest;
-
     case "search":
       return searchRequest;
-
    }
   }
 
@@ -327,9 +252,11 @@ export default function usePlayground({
       }
       if (
         !target.closest(".control-square-btn") &&
-        !target.closest(".map-popup-card")
+        !target.closest(".map-popup-card") &&
+        !target.closest(".search-popup-card")
       ) {
         setShowMapPopup(false);
+        setShowSearchPopup(false);
       }
     };
     window.addEventListener("click", handleOutsideClick);
@@ -341,6 +268,9 @@ export default function usePlayground({
   /* -------------------------------------------------------------------------- */
 
   const handleTabClick = (tab: TabType) => {
+    if (activeTab !== tab) {
+      setUrlInput("");
+    }
     setActiveTab(tab);
     if (onTabChange) {
       onTabChange(tab);
@@ -396,6 +326,7 @@ export default function usePlayground({
     // Auto-select the result tab
     setActiveResultTab((prev) => {
       if (prev) return prev;
+      if (type === "links") return "Links";
       const match = selectedFormats.find(
         (fmt) =>
           fmt.toLowerCase() === type ||
@@ -406,206 +337,12 @@ export default function usePlayground({
     });
   };
 
-  /** Fetch a single format's content from the server using a standalone axios call. */
-  const fetchFormat = useCallback(
-    async (filePath: string, type: string, pageIndex: number) => {
-      try {
-        const token = Cookies.get("token");
-        const baseUrl =
-          import.meta.env.VITE_BASE_URL;
-        const res = await axios.get(
-          `${baseUrl}/crawl/get/content?file_path=${encodeURIComponent(
-            filePath
-          )}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token ? `Bearer ${token}` : "",
-            },
-            timeout: 5 * 60000,
-          }
-        );
-
-        const resData = res?.data;
-        if (resData) {
-          const content = parseFileContent(resData, type);
-           console.log("CONTENT", content)
-          if (type === "markdown") {
-            setActivePageIndex(pageIndex);
-            setActiveResultTab("Markdown");
-          }
-          if (type === "links") {
-            setActivePageIndex(pageIndex);
-            setActiveResultTab("Links");
-          }
-          setScrapedPages((prev) => {
-            return prev
-              .map((p) => {
-                if (p.pageIndex === pageIndex) {
-                  return { ...p, [type]: content };
-                }
-                return p;
-              })
-              .concat(
-                prev.some((p) => p.pageIndex === pageIndex)
-                  ? []
-                  : [
-                      {
-                        pageIndex,
-                        title: `Page ${pageIndex + 1}`,
-                        [type]: content,
-                      },
-                    ]
-              )
-              .sort((a, b) => a.pageIndex - b.pageIndex);
-          });
-
-          // Auto-select initial result tab if nothing is selected
-          setActiveResultTab((prev) => {
-            if (prev) return prev;
-            const match = selectedFormats.find(
-              (fmt) =>
-                fmt.toLowerCase() === type ||
-                (fmt === "SEO" && type === "seo") ||
-                (fmt === "Images" && type === "images")
-            );
-            return match || prev;
-          });
-
-          addLog(`Successfully loaded ${type} for Page ${pageIndex + 1}.`);
-        }
-      } catch (err) {
-        console.error(`Failed to fetch ${type} at path ${filePath}:`, err);
-        addLog(`Failed to load ${type} for Page ${pageIndex + 1}.`);
-      }
-    },
-    [selectedFormats, addLog]
-  );
-
-  /** Process page data — dispatch fetchFormat or storeInlineContent for each format. */
-  const processPageFormats = useCallback(
-    (page: any, idx: number) => {
-      if (page.markdown_file)
-        fetchFormat(page.markdown_file, "markdown", idx);
-
-      if (page.screenshot) {
-        if (isInlineData(page.screenshot)) {
-          storeInlineContent(page.screenshot, "screenshot", idx);
-          addLog(`Screenshot for Page ${idx + 1} received as inline data.`);
-        } else {
-          fetchFormat(page.screenshot, "screenshot", idx);
-        }
-      }
-
-      if (page.html_file) fetchFormat(page.html_file, "html", idx);
-      if (page.links_file_path || page.links)
-        fetchFormat(page.links_file_path || page.links, "links", idx);
-      if (page.seo_json) fetchFormat(page.seo_json, "seo", idx);
-      if (page.images) fetchFormat(page.images, "images", idx);
-    },
-    [fetchFormat, addLog]
-  );
-
-  /** Poll the REST API for crawl results until pages are available. */
-  const fetchResultsFromPaths = useCallback(
-    async (jobId: string, retryCount = 0) => {
-      // Guard: only allow one polling chain at a time to prevent the useAxios
-      // abort-controller from cancelling a competing chain's in-flight request.
-      if (retryCount === 0) {
-        if (pollingActiveRef.current) {
-          console.log(
-            "[fetchResultsFromPaths] Polling already active, skipping duplicate chain."
-          );
-          return;
-        }
-        pollingActiveRef.current = true;
-      }
-
-      try {
-        addLog(
-          `Retrieving discovered page paths from server (attempt ${
-            retryCount + 1
-          })...`
-        );
-        const res = await getPathRequest({
-          path: `/${jobId}`,
-        });
-
-        const actualData = res?.data || res;
-        if (
-          actualData &&
-          actualData.pages &&
-          actualData.pages.length > 0
-        ) {
-          addLog(
-            `Found ${actualData.pages.length} crawled pages. Loading content...`
-          );
-
-          actualData.pages.forEach((page: any, idx: number) => {
-            const newPage: ScrapedPage = {
-              pageIndex: idx,
-              title: page.title || `Page ${idx + 1}`,
-            };
-
-            setScrapedPages((prev) => {
-              const existing = [...prev];
-              const foundIdx = existing.findIndex(
-                (p) => p.pageIndex === idx
-              );
-              if (foundIdx === -1) {
-                existing.push(newPage);
-              }
-              return existing.sort((a, b) => a.pageIndex - b.pageIndex);
-            });
-
-            processPageFormats(page, idx);
-          });
-
-          pollingActiveRef.current = false;
-          setIsLoading(false);
-        } else {
-          if (retryCount < 20) {
-            addLog(
-              `Job is still processing on the server. Checking again in 5 seconds...`
-            );
-            setTimeout(() => {
-              fetchResultsFromPaths(jobId, retryCount + 1);
-            }, 5000);
-          } else {
-            addLog(
-              `Extraction timed out on the server. Please try again.`
-            );
-            pollingActiveRef.current = false;
-            setIsLoading(false);
-          }
-        }
-      } catch (err) {
-        console.error(
-          `Failed to fetch paths for Job ID ${jobId}:`,
-          err
-        );
-        if (retryCount < 20) {
-          setTimeout(() => {
-            fetchResultsFromPaths(jobId, retryCount + 1);
-          }, 5000);
-        } else {
-          addLog(`Error loading paths from server.`);
-          pollingActiveRef.current = false;
-          setIsLoading(false);
-        }
-      }
-    },
-    [getPathRequest, processPageFormats, addLog]
-  );
-
   /* ---- WEBSOCKET HOOK ---- */
   const { startWebSocket } = useWebSocket({
     addLog,
     setScrapedPages,
-    processPageFormats,
+    storeInlineContent,
     setIsLoading,
-    fetchResultsFromPaths,
-    fetchFormat
   });
 
   /* -------------------------------------------------------------------------- */
@@ -614,7 +351,7 @@ export default function usePlayground({
 
   const links = ["map"]
   const proxy =["map","crawl", "scrape"]
-  const All = ["search","scrape","parse","crawl"]
+  const All = ["scrape","parse","crawl"]
   const handleRunAction = () => {
     if (!urlInput.trim()) {
       toast("Please enter a URL to analyze!", { icon: "⚠️" });
@@ -629,12 +366,19 @@ export default function usePlayground({
     addLog(`Initiating request: ${urlInput}...`);
 
     if (activeTab === "search") {
-      performSearch(urlInput)
-        .then((data) => {
+      searchRequest({
+        data: {
+          query: urlInput,
+          limit: searchLimit
+        }
+      })
+        .then((res) => {
+          const data = res?.data || res;
           const searchResultPage: ScrapedPage = {
             pageIndex: 0,
             title: `Search Results for "${urlInput}"`,
             markdown: typeof data === "object" ? JSON.stringify(data, null, 2) : String(data),
+            searchData: Array.isArray(data?.data) ? data.data : (Array.isArray(data) ? data : data?.results || []),
           };
           setScrapedPages([searchResultPage]);
           setActiveResultTab(selectedFormats.includes("Markdown") ? "Markdown" : selectedFormats[0] || "Markdown");
@@ -651,6 +395,13 @@ export default function usePlayground({
 
     const payload : any = {
       url: urlInput.startsWith("http") ? urlInput : `https://${urlInput}`,
+    }
+    if (activeTab == "crawl"){
+      payload.crawl= {
+        max_pages: crawlMaxPages,
+        same_domain_only: crawlSameDomainOnly,
+        include_subdomains: crawlIncludeSubdomains
+      }
     }
     if (proxy.includes(activeTab)) {
      payload.proxy= {
@@ -706,7 +457,7 @@ export default function usePlayground({
     requestHook({
       data: payload,
     })
-      .then((res) => {
+      .then((res: any) => {
         if (res) {
           const actualData = res.data || res;
 
@@ -717,7 +468,11 @@ export default function usePlayground({
             res.crawl_id;
           if (jobId) {
             addLog(`Asynchronous task registered. Job ID: ${jobId}`);
-            startWebSocket(jobId);
+            if (activeTab === "crawl" || activeTab === "scrape" || activeTab === "map") {
+              startWebSocket(jobId);
+            } else {
+              // fetchResultsFromPaths(jobId);
+            }
           } else {
             addLog("Direct response received. Parsing results...");
             const singlePage: ScrapedPage = {
@@ -730,16 +485,27 @@ export default function usePlayground({
                 typeof actualData.seo === "object"
                   ? JSON.stringify(actualData.seo, null, 2)
                   : actualData.seo,
+              seo_md: actualData.seo_md,
+              seo_json: actualData.seo_json,
+              seo_xlsx_s3_url: actualData.seo_xlsx_s3_url,
               images:
                 typeof actualData.images === "object"
                   ? JSON.stringify(actualData.images, null, 2)
                   : actualData.images,
+              links:
+                activeTab === "map" && !actualData.links
+                  ? JSON.stringify(actualData, null, 2)
+                  : typeof actualData.links === "object"
+                  ? JSON.stringify(actualData.links, null, 2)
+                  : actualData.links,
             };
             setScrapedPages([singlePage]);
             setActivePageIndex(0);
             setIsLoading(false);
 
-            if (selectedFormats.length > 0) {
+            if (activeTab === "map") {
+              setActiveResultTab("Links");
+            } else if (selectedFormats.length > 0) {
               const availableFormats = selectedFormats.filter((fmt) => {
                 const key = fmt.toLowerCase();
                 return (
@@ -757,7 +523,7 @@ export default function usePlayground({
           }
         }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error("Operation error:", err);
         addLog(
           `Error occurred: ${err?.message || "Something went wrong"}`
@@ -799,6 +565,12 @@ export default function usePlayground({
     setShowSettings,
     showMapPopup,
     setShowMapPopup,
+    showSearchPopup,
+    setShowSearchPopup,
+
+    // Search params
+    searchLimit,
+    setSearchLimit,
 
     // Map params
     mapLimit,
@@ -809,6 +581,16 @@ export default function usePlayground({
     setMapIncludeSubdomains,
     mapProxyGeo,
     setMapProxyGeo,
+
+    // Crawl params
+    crawlMaxPages,
+    setCrawlMaxPages,
+    crawlSameDomainOnly,
+    setCrawlSameDomainOnly,
+    crawlIncludeSubdomains,
+    setCrawlIncludeSubdomains,
+    showCrawlPopup,
+    setShowCrawlPopup,
 
     // Rendering params
     jsRender,

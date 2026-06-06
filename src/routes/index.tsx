@@ -12,7 +12,7 @@ const ForgetPassword = lazy(() => import("../page/auth/forgetpassword/forget-pas
 const ResetPassword = lazy(() => import("../page/auth/resetpassword/reset-password"))
 const Dashboard = lazy(() => import("../page/dashboard/overview/overview"))
 import MainLayout from "../components/layout/mainlayout/MainLayout";
-const PlaygroundPage = lazy(() => import("../page/components/playground/PlaygroundPage"));
+const PlaygroundPage = lazy(() => import("../page/components/playground/playground-page"));
 const PricingPage = lazy(() => import("../page/components/pricing/pricing"));
 const ContactUs = lazy(() => import("../page/components/contactus/contact-us"));
 

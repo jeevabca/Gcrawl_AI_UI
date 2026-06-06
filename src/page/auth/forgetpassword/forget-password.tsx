@@ -42,7 +42,7 @@ export default function ForgetPassword() {
         {/* Header with Logo */}
         <div className="forget-password-header">
           <div className="forget-password-logo-container">
-            <img src="../../src/assets/Logo.svg" alt="GcrawlAI" style={{ width: "200px", height: "auto" }} />
+            <img src="/Logo.svg" alt="GcrawlAI" style={{ width: "200px", height: "auto" }} />
           </div>
           <h2 className="forget-password-title">Forgot Password?</h2>
           <p className="forget-password-subtitle">

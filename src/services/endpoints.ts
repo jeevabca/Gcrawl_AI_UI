@@ -49,16 +49,14 @@ export const endpoints = {
     url:"/api/v1/search",
     method:methods.post
   },
-  GET_PATH:{
-    url:"/crawler/paths",
-    method:methods.get
-  },
   GET_CRAWL_CONTENT: {
-    url: "/crawl/get/content",
+    url: "/crawler/data",
     method: methods.get,
   },
-  
-  
+  SCREENSHOT:{
+    url:"/api/v1/screenshot",
+    method:methods.post
+  }
 };
 
 export type endpointsType = keyof typeof endpoints;

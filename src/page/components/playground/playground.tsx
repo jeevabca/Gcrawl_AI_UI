@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import "./playground.css";
 import {
@@ -12,16 +13,313 @@ import {
 import { FaRegFileCode, FaBug, FaCode } from "react-icons/fa6";
 import { LiaLinkSolid } from "react-icons/lia";
 
-import MapPopup from "./mappopup";
+import MapPopup from "./map/mappopup";
+import MapUI from "./map/map";
+import ImageGallery from "./images/image";
+import SeoViewer from "./seo/seo";
+import SearchPopup from "./search/searchpopup";
+import SearchUI from "./search/search";
+import CrawlPopup from "./crawl/crawlpopup";
 import FormatPopup from "./formatpopup";
 import ProxyPopup, { getCountryInfo } from "./proxypopup";
 import usePlayground from "./usePlayground";
 import type { PlaygroundProps } from "./usePlayground";
+import { getHostname } from "../../../utils/helper";
+import Loader from "../../../components/loader/playground_loader";
+
+interface PageResultCardProps {
+  page: any;
+  index: number;
+  submittedUrl: string;
+  getHostname: (url: string) => string;
+}
+
+function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCardProps) {
+  // Determine available tabs
+  const availableTabs: string[] = [];
+  if (page.markdown_content || page.markdown) availableTabs.push("Markdown");
+  if (page.html_content || page.html) availableTabs.push("HTML");
+  if (page.screenshot_s3_url || page.screenshot) availableTabs.push("Screenshot");
+  if (page.links) availableTabs.push("Links");
+  if (page.images_json || page.images) availableTabs.push("Images");
+  if (page.seo_json || page.seo || page.seo_md || page.seo_xlsx_s3_url) availableTabs.push("SEO");
+  availableTabs.push("JSON"); // JSON is always available
+
+  const [activeTab, setActiveTab] = useState<string>(availableTabs[0] || "JSON");
+  const [hasManuallySelected, setHasManuallySelected] = useState(false);
+
+  useEffect(() => {
+    if (!hasManuallySelected && availableTabs.length > 0) {
+      const preferredTab = availableTabs.find(tab => tab !== "JSON") || "JSON";
+      if (activeTab !== preferredTab) {
+        setActiveTab(preferredTab);
+      }
+    }
+  }, [availableTabs.join(","), hasManuallySelected]);
+
+  // Get active content
+  const getTabContent = () => {
+    switch (activeTab) {
+      case "Markdown":
+        return page.markdown_content || page.markdown || "";
+      case "HTML":
+        return page.html_content || page.html || "";
+      case "Screenshot":
+        return page.screenshot_s3_url || page.screenshot || "";
+      case "Links":
+        return typeof page.links === "object" ? JSON.stringify(page.links, null, 2) : (page.links || "");
+      case "Images":
+        return typeof page.images_json === "object" ? JSON.stringify(page.images_json, null, 2) : (page.images || "");
+      case "SEO":
+        return typeof page.seo_json === "object" ? JSON.stringify(page.seo_json, null, 2) : (page.seo || "");
+      case "JSON":
+      default:
+        return JSON.stringify(page, null, 2);
+    }
+  };
+
+  const handleCopy = () => {
+    const content = getTabContent();
+    if (content) {
+      navigator.clipboard.writeText(content);
+      toast.success(`Copied ${activeTab} to clipboard!`);
+    }
+  };
+
+  const handleDownloadMarkdown = () => {
+    const md = page.markdown_content || page.markdown;
+    if (!md) {
+      toast.error("No markdown content available to download.");
+      return;
+    }
+    const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${getHostname(submittedUrl)}_page_${index}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("Markdown file downloaded!");
+  };
+
+  // Check if SEO is the only real content (no markdown, html, screenshot, images, links)
+  const hasSeoData = page.seo_json || page.seo || page.seo_md || page.seo_xlsx_s3_url;
+  const hasOtherContent = (page.markdown_content || page.markdown) ||
+    (page.html_content || page.html) ||
+    (page.screenshot_s3_url || page.screenshot) ||
+    page.links ||
+    (page.images_json || page.images);
+  const isSeoOnly = hasSeoData && !hasOtherContent;
+
+  // If SEO is the only content, render SeoViewer directly without outer tabs
+  if (isSeoOnly) {
+    return (
+      <div style={{
+        backgroundColor: '#ffffff',
+        border: '1px solid #f0f0f0',
+        borderRadius: '12px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        marginBottom: '24px',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        {/* Header */}
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #f9fafb' }}>
+          <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 600, color: '#111827', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#f97316', fontWeight: 700 }}>#{index}</span>
+            <span>{page.title || page.start_url || `Page ${index}`}</span>
+          </h3>
+          <div style={{ fontSize: '13px', color: '#9ca3af', fontFamily: 'monospace' }}>
+            {page.url || page.start_url || submittedUrl}
+          </div>
+        </div>
+
+        {/* SEO Viewer directly */}
+        <div style={{ padding: '20px 24px', backgroundColor: '#ffffff' }}>
+          <SeoViewer page={page} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      backgroundColor: '#ffffff',
+      border: '1px solid #f0f0f0',
+      borderRadius: '12px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+      marginBottom: '24px',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* Header */}
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid #f9fafb' }}>
+        <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 600, color: '#111827', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ color: '#f97316', fontWeight: 700 }}>#{index}</span>
+          <span>{page.title || page.start_url || `Page ${index}`}</span>
+        </h3>
+        <div style={{ fontSize: '13px', color: '#9ca3af', fontFamily: 'monospace' }}>
+          {page.url || page.start_url || submittedUrl}
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{
+        display: 'flex',
+        padding: '0 24px',
+        backgroundColor: '#fafafa',
+        borderBottom: '1px solid #e5e7eb',
+        gap: '16px'
+      }}>
+        {availableTabs.map((tab) => {
+          const isActive = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              onClick={() => {
+                setActiveTab(tab);
+                setHasManuallySelected(true);
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '12px 4px',
+                border: 'none',
+                borderBottom: isActive ? '2px solid var(--primary)' : '2px solid transparent',
+                backgroundColor: 'transparent',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: isActive ? 'var(--primary)' : '#4b5563',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              {tab === "Markdown" && <FaCode size={14} />}
+              {tab === "HTML" && <FaRegFileCode size={14} />}
+              {tab === "JSON" && <FiFile size={14} />}
+              <span>{tab}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Content Display */}
+      <div style={{ padding: '20px 24px', backgroundColor: '#ffffff', minHeight: '150px' }}>
+        <div style={{
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+          backgroundColor: '#ffffff',
+          padding: '16px',
+          maxHeight: '400px',
+          overflowY: 'auto'
+        }}>
+          {activeTab === "Screenshot" ? (
+            getTabContent() ? (
+              <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                <div style={{ maxWidth: '100%', maxHeight: '500px', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                  <img 
+                    src={getTabContent()} 
+                    alt="Screenshot" 
+                    style={{ display: 'block', maxWidth: '100%', height: 'auto' }} 
+                  />
+                </div>
+              </div>
+            ) : (
+              <div style={{ color: '#6b7280', fontSize: '13px' }}>No screenshot available</div>
+            )
+          ) : activeTab === "Images" ? (
+            <ImageGallery page={page} />
+          ) : activeTab === "SEO" ? (
+            <SeoViewer page={page} />
+          ) : (
+            <pre style={{
+              margin: 0,
+              padding: 0,
+              backgroundColor: 'transparent',
+              color: '#374151',
+              fontSize: '13px',
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+              overflowX: 'auto',
+              whiteSpace: 'pre-wrap'
+            }}>
+              <code>{getTabContent()}</code>
+            </pre>
+          )}
+        </div>
+      </div>
+
+      {/* Footer / Copy Button */}
+      <div style={{
+        padding: '12px 24px',
+        borderTop: '1px solid #f3f4f6',
+        backgroundColor: '#fafafa',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        gap: '12px'
+      }}>
+        {activeTab === "Markdown" && (
+          <button
+            onClick={handleDownloadMarkdown}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "6px",
+              padding: "6px 14px",
+              fontSize: "13px",
+              fontWeight: 600,
+              color: "#374151",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+          >
+            <FiDownload />
+            <span>Download Markdown</span>
+          </button>
+        )}
+        <button
+          onClick={handleCopy}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            background: "#ffffff",
+            border: "1px solid #e5e7eb",
+            borderRadius: "6px",
+            padding: "6px 14px",
+            fontSize: "13px",
+            fontWeight: 600,
+            color: "#374151",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
+          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#ffffff")}
+        >
+          <FiCopy />
+          <span>Copy as {activeTab}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function Playground(props: PlaygroundProps = {}) {
   const {
     // Tab state
     activeTab,
+    setActiveTab,
     handleTabClick,
 
     // URL input
@@ -47,6 +345,12 @@ export default function Playground(props: PlaygroundProps = {}) {
     setShowSettings,
     showMapPopup,
     setShowMapPopup,
+    showSearchPopup,
+    setShowSearchPopup,
+
+    // Search params
+    searchLimit,
+    setSearchLimit,
 
     // Map params
     mapLimit,
@@ -55,8 +359,17 @@ export default function Playground(props: PlaygroundProps = {}) {
     setMapSameDomainOnly,
     mapIncludeSubdomains,
     setMapIncludeSubdomains,
-    mapProxyGeo,
     setMapProxyGeo,
+
+    // Crawl params
+    crawlMaxPages,
+    setCrawlMaxPages,
+    crawlSameDomainOnly,
+    setCrawlSameDomainOnly,
+    crawlIncludeSubdomains,
+    setCrawlIncludeSubdomains,
+    showCrawlPopup,
+    setShowCrawlPopup,
 
     // Rendering params
     jsRender,
@@ -96,13 +409,10 @@ export default function Playground(props: PlaygroundProps = {}) {
 
     // Result state
     scrapedPages,
-    activeResultTab,
-    setActiveResultTab,
     isLoading,
 
     // Derived helpers
     getActivePage,
-    getActiveTabContent,
     getButtonText,
 
     // Actions
@@ -113,94 +423,7 @@ export default function Playground(props: PlaygroundProps = {}) {
     submittedUrl,
   } = usePlayground(props);
 
-  // Helper to extract hostname for favicon
-  const getHostname = (url: string) => {
-    try {
-      const u = url.startsWith("http") ? url : `https://${url}`;
-      return new URL(u).hostname;
-    } catch (e) {
-      return "example.com";
-    }
-  };
 
-  const handleDownloadMarkdown = () => {
-    const page = getActivePage();
-    if (!page || !page.markdown) {
-      toast.error("No markdown content available to download.");
-      return;
-    }
-    const blob = new Blob([page.markdown], { type: "text/markdown;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${getHostname(submittedUrl)}_page_${page.pageIndex + 1}.md`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    toast.success("Markdown file downloaded!");
-  };
-
-  /* -------------------------------------------------------------------------- */
-  /*                          RENDER RESULT CONTENT                             */
-  /* -------------------------------------------------------------------------- */
-
-  const renderResultTabContent = () => {
-    const page = getActivePage();
-    if (!page) return null;
-
-    if (activeResultTab === "Screenshot") {
-      const screenshotVal = page.screenshot;
-      if (screenshotVal && typeof screenshotVal === "string") {
-        let imgSrc = screenshotVal;
-
-        // Already a valid data URI — use as-is
-        if (!imgSrc.startsWith("data:")) {
-          // If it's a URL (http/https), use directly
-          if (imgSrc.startsWith("http")) {
-            // imgSrc stays as URL
-          } else {
-            // Raw base64 — detect JPEG vs PNG from data header and build data URI
-            const mime = imgSrc.startsWith("/9j/")
-              ? "image/jpeg"
-              : `image/${screenshotFormat === "jpg" ? "jpeg" : screenshotFormat}`;
-            imgSrc = `data:${mime};base64,${imgSrc}`;
-          }
-        }
-
-        return (
-          <div style={{ display: "flex", justifyContent: "center", padding: "10px" }}>
-            <img
-              src={imgSrc}
-              alt="Page Screenshot"
-              onError={(e) => {
-                console.error("Screenshot image failed to load", e);
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-              style={{
-                maxWidth: "100%",
-                borderRadius: "8px",
-                border: "1px solid #374151",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
-              }}
-            />
-          </div>
-        );
-      }
-      return (
-        <pre className="results-code-block">
-          <code>Screenshot data not available.</code>
-        </pre>
-      );
-    }
-
-    const content = getActiveTabContent();
-    return (
-      <pre className="results-code-block">
-        <code>{content}</code>
-      </pre>
-    );
-  };
 
   /* -------------------------------------------------------------------------- */
   /*                                   JSX                                      */
@@ -384,12 +607,16 @@ export default function Playground(props: PlaygroundProps = {}) {
           <div className="card-controls-row">
             <div className="controls-left-group" style={{ position: "relative" }}>
               {/* Settings Toggle Sliders */}
-              {activeTab !== "scrape" && activeTab !== "crawl" && (
+              {activeTab !== "scrape" && (
                 <button
-                  className={`control-square-btn ${activeTab === "map" ? (showMapPopup ? "active" : "") : (showSettings ? "active" : "")}`}
+                  className={`control-square-btn ${activeTab === "map" ? (showMapPopup ? "active" : "") : activeTab === "search" ? (showSearchPopup ? "active" : "") : activeTab === "crawl" ? (showCrawlPopup ? "active" : "") : (showSettings ? "active" : "")}`}
                   onClick={() => {
                     if (activeTab === "map") {
                       setShowMapPopup(!showMapPopup);
+                    } else if (activeTab === "search") {
+                      setShowSearchPopup(!showSearchPopup);
+                    } else if (activeTab === "crawl") {
+                      setShowCrawlPopup(!showCrawlPopup);
                     } else {
                       setShowSettings(!showSettings);
                     }
@@ -397,7 +624,7 @@ export default function Playground(props: PlaygroundProps = {}) {
                   title="Advanced Settings"
                   disabled={isLoading}
                 >
-                  <FiSliders />
+                  <FiSliders /> {/* filter */}
                 </button>
               )}
 
@@ -410,8 +637,25 @@ export default function Playground(props: PlaygroundProps = {}) {
                 setSameDomainOnly={setMapSameDomainOnly}
                 includeSubdomains={mapIncludeSubdomains}
                 setIncludeSubdomains={setMapIncludeSubdomains}
-                proxyGeo={mapProxyGeo}
                 setProxyGeo={setMapProxyGeo}
+              />
+
+              <SearchPopup
+                isOpen={showSearchPopup}
+                onClose={() => setShowSearchPopup(false)}
+                limit={searchLimit}
+                setLimit={setSearchLimit}
+              />
+
+              <CrawlPopup
+                isOpen={showCrawlPopup}
+                onClose={() => setShowCrawlPopup(false)}
+                maxPages={crawlMaxPages}
+                setMaxPages={setCrawlMaxPages}
+                sameDomainOnly={crawlSameDomainOnly}
+                setSameDomainOnly={setCrawlSameDomainOnly}
+                includeSubdomains={crawlIncludeSubdomains}
+                setIncludeSubdomains={setCrawlIncludeSubdomains}
               />
 
               {/* Format Dropdown Selector */}
@@ -510,132 +754,53 @@ export default function Playground(props: PlaygroundProps = {}) {
 
         {/* LOADING INDICATOR */}
         {isLoading && (
-          <div className="extraction-loading-indicator" style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <div className="loading-spinner-circle"></div>
-              <div className="loading-details">
-                <div className="loading-main-label">
-                  {activeTab === "crawl" ? "Crawling Site..." : "Scraping URL..."}
-                </div>
-                <div className="loading-sub-log">Connecting to agent and running requested extraction formats...</div>
+          <div className="extraction-loading-indicator" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }}>
+            <Loader />
+            <div className="loading-details" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+              <div className="loading-main-label" style={{ fontSize: "16px", fontWeight: 700 }}>
+                {activeTab === "crawl" ? "Crawling Site..." : 
+                 activeTab === "search" ? "Searching the Web..." :
+                 activeTab === "map" ? "Mapping Site Links..." :
+                 activeTab === "parse" ? "Parsing Files..." : "Scraping URL..."}
               </div>
-            </div>
-            
-          </div>
-        )}
-
-        {/* RESULTS CARD PANEL */}
-        {scrapedPages.length > 0 && !isLoading && (
-          <div className="extraction-results-wrapper animate-slide-up">
-            
-            {/* New Firecrawl-like Header Design */}
-            <div className="results-header-container" style={{ padding: '24px 24px 16px', borderBottom: '1px solid #f0f0f0', backgroundColor: '#ffffff', borderRadius: '16px 16px 0 0' }}>
-              <div style={{ marginBottom: '20px' }}>
-                <h2 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: 600, color: '#111827', display: 'flex', alignItems: 'center' }}>
-                  {getActivePage()?.title || "Scraped Page Result"}
-                </h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#6b7280', fontSize: '14px' }}>
-                  <img 
-                    src={`https://www.google.com/s2/favicons?domain=${getHostname(submittedUrl)}&sz=32`} 
-                    alt="favicon" 
-                    style={{ width: 16, height: 16, borderRadius: '2px' }} 
-                  />
-                  <span>{submittedUrl}</span>
-                </div>
-              </div>
-
-              {/* Action Buttons Row */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  {/* Result Tabs for switching between formats */}
-                  {selectedFormats.map(fmt => (
-                    <button
-                      key={fmt}
-                      onClick={() => setActiveResultTab(fmt)}
-                      style={{
-                        padding: "6px 16px",
-                        borderRadius: "20px",
-                        border: activeResultTab === fmt ? "1px solid var(--primary)" : "1px solid #e5e7eb",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                        backgroundColor: activeResultTab === fmt ? "#fff5f0" : "#ffffff",
-                        color: activeResultTab === fmt ? "var(--primary)" : "#4b5563",
-                        transition: "all 0.2s ease"
-                      }}
-                    >
-                      {fmt}
-                    </button>
-                  ))}
-                  
-                </div>
-                
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  {/* Download Markdown Button */}
-                  {selectedFormats.includes("Markdown") && activeResultTab === "Markdown" && (
-                    <button
-                      onClick={handleDownloadMarkdown}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        background: "#f9fafb",
-                        border: "1px solid #e5e7eb",
-                        borderRadius: "6px",
-                        padding: "6px 14px",
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        color: "#374151",
-                        cursor: "pointer",
-                        transition: "all 0.2s ease"
-                      }}
-                      onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f3f4f6")}
-                      onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
-                    >
-                      <FiDownload />
-                      <span>Download Markdown</span>
-                    </button>
-                  )}
-
-                  {/* Copy Button */}
-                  <button
-                    onClick={() => {
-                      const content = getActiveTabContent();
-                      if (content) {
-                        navigator.clipboard.writeText(content);
-                        toast.success("Copied to clipboard!");
-                      }
-                    }}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      background: "#f9fafb",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "6px",
-                      padding: "6px 14px",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#374151",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease"
-                    }}
-                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f3f4f6")}
-                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
-                  >
-                    <FiCopy />
-                    <span>Copy</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-        
-
-            <div className="results-viewer-container">
-              {renderResultTabContent()}
+              <div className="loading-sub-log">Connecting to agent and running requested extraction formats...</div>
             </div>
           </div>
         )}
+
+        {/* RESULTS CARD FEED */}
+        {scrapedPages.length > 0 && !getActivePage()?.searchData && !getActivePage()?.links && (
+          <div className="animate-slide-up" style={{ display: 'flex', flexDirection: 'column', gap: '24px', width: '160%', marginTop: '24px' }}>
+            {scrapedPages.map((page, idx) => (
+              <PageResultCard
+                key={page.pageIndex ?? idx}
+                page={page}
+                index={idx + 1}
+                submittedUrl={submittedUrl}
+                getHostname={getHostname}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* MAP UI */}
+        <MapUI
+          scrapedPages={scrapedPages}
+          isLoading={isLoading}
+          getActivePage={getActivePage}
+          getHostname={getHostname}
+          submittedUrl={submittedUrl}
+        />
+
+        {/* SEARCH RESULTS UI */}
+        <SearchUI
+          scrapedPages={scrapedPages}
+          isLoading={isLoading}
+          getActivePage={getActivePage}
+          getHostname={getHostname}
+          setUrlInput={setUrlInput}
+          setActiveTab={setActiveTab}
+        />
 
       </div>
     </div>

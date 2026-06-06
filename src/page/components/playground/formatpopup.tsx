@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { RiMarkdownFill, RiCodeSSlashLine, RiScreenshot2Line, RiImage2Line } from "react-icons/ri";
 import { TbSeo } from "react-icons/tb";
+import { useTheme } from "../../../utils/theme";
 
 export type FormatType = "Markdown" | "HTML" | "Screenshot" | "Images" | "SEO";
 
@@ -175,39 +176,42 @@ interface ToggleSwitchProps {
   onChange: (val: boolean) => void;
 }
 
-const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => (
-  <button
-    type="button"
-    onClick={() => onChange(!checked)}
-    style={{
-      width: "36px",
-      height: "20px",
-      borderRadius: "10px",
-      backgroundColor: checked ? "var(--primary)" : "rgba(120, 120, 128, 0.2)",
-      border: "none",
-      cursor: "pointer",
-      position: "relative",
-      padding: "0",
-      transition: "background-color 0.25s",
-      display: "flex",
-      alignItems: "center",
-    }}
-  >
-    <div
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
+  const { isDarkMode } = useTheme();
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
       style={{
-        width: "16px",
-        height: "16px",
-        borderRadius: "50%",
-        backgroundColor: "#ffffff",
-        position: "absolute",
-        top: "2px",
-        left: checked ? "18px" : "2px",
-        transition: "left 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)",
-        boxShadow: "0 1px 2px rgba(0, 0, 0, 0.2)",
+        width: "36px",
+        height: "20px",
+        borderRadius: "10px",
+        backgroundColor: checked ? isDarkMode ? "var(--pill-bg)" : "var(--primary)" : "rgba(120, 120, 128, 0.2)",
+        border: "none",
+        cursor: "pointer",
+        position: "relative",
+        padding: "0",
+        transition: "background-color 0.25s",
+        display: "flex",
+        alignItems: "center",
       }}
-    />
-  </button>
-);
+    >
+      <div
+        style={{
+          width: "16px",
+          height: "16px",
+          borderRadius: "50%",
+          backgroundColor: "#ffffff",
+          position: "absolute",
+          top: "2px",
+          left: checked ? "18px" : "2px",
+          transition: "left 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)",
+          boxShadow: "0 1px 2px rgba(0, 0, 0, 0.2)",
+        }}
+      />
+    </button>
+  );
+};
 
 interface FormatRowItemProps {
   format: FormatType;
@@ -490,7 +494,7 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
                       type="number"
                       style={styles.settingsInput}
                       value={screenshotQuality}
-                      onChange={(e) => setScreenshotQuality(Math.min(100, Math.max(1, parseInt(e.target.value) || 90)))}
+                      onChange={(e) => setScreenshotQuality(Math.min(100, Math.max(1, parseInt(e.target.value))))}
                     />
                   </div>
                 )}
@@ -514,7 +518,7 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
                       type="number"
                       style={styles.settingsInput}
                       value={renderTimeout}
-                      onChange={(e) => setRenderTimeout(parseInt(e.target.value) || 20000)}
+                      onChange={(e) => setRenderTimeout(parseInt(e.target.value))}
                     />
                   </div>
 
@@ -531,7 +535,7 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
                           type="number"
                           style={{ ...styles.settingsInput, width: "100%" }}
                           value={scrollDelay}
-                          onChange={(e) => setScrollDelay(parseInt(e.target.value) || 500)}
+                          onChange={(e) => setScrollDelay(parseInt(e.target.value))}
                         />
                       </div>
                       <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "4px" }}>
@@ -540,7 +544,7 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
                           type="number"
                           style={{ ...styles.settingsInput, width: "100%" }}
                           value={maxScrolls}
-                          onChange={(e) => setMaxScrolls(parseInt(e.target.value) || 3)}
+                          onChange={(e) => setMaxScrolls(parseInt(e.target.value))}
                         />
                       </div>
                     </div>
