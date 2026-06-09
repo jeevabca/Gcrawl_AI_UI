@@ -89,10 +89,6 @@ export const router = createBrowserRouter([
             element: <Dashboard />,
           },
           {
-            path: "parse",
-            element: <Dashboard />,
-          },
-          {
             path: "map",
             element: <Dashboard />,
           },

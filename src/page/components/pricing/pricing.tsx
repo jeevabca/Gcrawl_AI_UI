@@ -10,8 +10,25 @@ import { GiCheckMark } from "react-icons/gi";
 
 export default function PricingPage() {
   const navigate = useNavigate();
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
-  const [currency, setCurrency] = useState<"INR" | "USD">("INR");
+  const billingPeriod = "monthly";
+  const ROTATING_WORDS = ["scraping", "crawling", "searching", "mapping"];
+
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Fade out
+      setVisible(false);
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % ROTATING_WORDS.length);
+        // Fade in
+        setVisible(true);
+      }, 300);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     // Pricing page does not support dark theme; force light mode on mount
@@ -28,49 +45,6 @@ export default function PricingPage() {
 
   const handlePurchase = (plan: string) => {
     toast.success(`Redirecting to checkout for ${plan} plan (${billingPeriod})...`);
-  };
-
-  const getPriceText = (plan: string) => {
-    if (plan === "Enterprise" || plan === "Free") {
-      return plan === "Free" ? "Free" : "Custom";
-    }
-    if (currency === "INR") {
-      if (billingPeriod === "monthly") {
-        switch (plan) {
-          case "Starter": return "₹1k";
-          case "Growth": return "₹3.3k";
-          case "Pro": return "₹6.7k";
-          case "Business": return "₹27k";
-          default: return "Custom";
-        }
-      } else {
-        switch (plan) {
-          case "Starter": return "₹800";
-          case "Growth": return "₹2.6k";
-          case "Pro": return "₹5.3k";
-          case "Business": return "₹21.6k";
-          default: return "Custom";
-        }
-      }
-    } else {
-      if (billingPeriod === "monthly") {
-        switch (plan) {
-          case "Starter": return "$19";
-          case "Growth": return "$39";
-          case "Pro": return "$79";
-          case "Business": return "$319";
-          default: return "Custom";
-        }
-      } else {
-        switch (plan) {
-          case "Starter": return "$15";
-          case "Growth": return "$31";
-          case "Pro": return "$63";
-          case "Business": return "$255";
-          default: return "Custom";
-        }
-      }
-    }
   };
 
   return (
@@ -114,35 +88,7 @@ export default function PricingPage() {
         </div>
 
         <h1 className="pricing-main-title">Pricing that Makes Sense</h1>
-
-        {/* Toggle Switch Switch & Currency Switcher */}
-        <div className="pricing-toggle-container">
-          <div className="pricing-toggle-capsule">
-            <button
-              className={`toggle-option-btn ${billingPeriod === "monthly" ? "active" : ""}`}
-              onClick={() => setBillingPeriod("monthly")}
-            >
-              Monthly
-            </button>
-            <button
-              className={`toggle-option-btn ${billingPeriod === "annual" ? "active" : ""}`}
-              onClick={() => setBillingPeriod("annual")}
-            >
-              Annual
-            </button>
-          </div>
-
-          <div className="currency-selector-wrapper">
-            <select
-              className="currency-select-dropdown"
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value as "USD" | "INR")}
-            >
-              <option value="INR">🇮🇳 INR</option>
-              <option value="USD">🇺🇸 USD</option>
-            </select>
-          </div>
-        </div>
+        
       </section>
 
       {/* Subscription Pricing Grid - Top 4 columns */}
@@ -162,10 +108,6 @@ export default function PricingPage() {
             <span className="spec-val-bold">2</span>
           </div>
 
-          <div className="pricing-price-display">
-            <span className="price-amount">{getPriceText("Free")}</span>
-          </div>
-
           <ul className="pricing-features-list">
             <li>
               <GiCheckMark className="pricing-check-icon" size={12} />
@@ -180,10 +122,6 @@ export default function PricingPage() {
               <span>2 concurrent requests</span>
             </li>
           </ul>
-
-          <button className="pricing-action-btn dark-action-btn" onClick={() => handlePurchase("Free")}>
-            Get started
-          </button>
         </div>
 
         {/* STARTER Card */}
@@ -197,24 +135,7 @@ export default function PricingPage() {
           </div>
           <div className="pricing-spec-row" style={{ marginBottom: "20px" }}>
             <span className="spec-label">Concurrency: </span>
-            <span className="spec-val-bold">10</span>
-          </div>
-
-          <div className="pricing-price-display">
-            <span className="price-amount">{getPriceText("Starter")}</span>
-            <span className="price-period">/mo</span>
-          </div>
-
-          <div className="card-billing-toggle-row">
-            <label className="pricing-mini-switch">
-              <input
-                type="checkbox"
-                checked={billingPeriod === "annual"}
-                onChange={(e) => setBillingPeriod(e.target.checked ? "annual" : "monthly")}
-              />
-              <span className="mini-slider"></span>
-            </label>
-            <span className="mini-toggle-label">Billed yearly</span>
+            <span className="spec-val-bold">5</span>
           </div>
 
           <ul className="pricing-features-list">
@@ -224,13 +145,9 @@ export default function PricingPage() {
             </li>
             <li>
               <GiCheckMark className="pricing-check-icon" size={12} />
-              <span>10 concurrent requests</span>
+              <span>5 concurrent requests</span>
             </li>
           </ul>
-
-          <button className="pricing-action-btn dark-action-btn" onClick={() => handlePurchase("Starter")}>
-            Subscribe
-          </button>
         </div>
 
         {/* GROWTH Card (retains growth-highlighted blue theme, Top Badge: "Most popular") */}
@@ -245,24 +162,7 @@ export default function PricingPage() {
           </div>
           <div className="pricing-spec-row" style={{ marginBottom: "20px" }}>
             <span className="spec-label">Concurrency: </span>
-            <span className="spec-val-bold">50</span>
-          </div>
-
-          <div className="pricing-price-display">
-            <span className="price-amount">{getPriceText("Growth")}</span>
-            <span className="price-period">/mo</span>
-          </div>
-
-          <div className="card-billing-toggle-row">
-            <label className="pricing-mini-switch">
-              <input
-                type="checkbox"
-                checked={billingPeriod === "annual"}
-                onChange={(e) => setBillingPeriod(e.target.checked ? "annual" : "monthly")}
-              />
-              <span className="mini-slider"></span>
-            </label>
-            <span className="mini-toggle-label">Billed yearly</span>
+            <span className="spec-val-bold">15</span>
           </div>
 
           <ul className="pricing-features-list">
@@ -272,13 +172,9 @@ export default function PricingPage() {
             </li>
             <li>
               <GiCheckMark className="pricing-check-icon" size={12} />
-              <span>50 concurrent requests</span>
+              <span>15 concurrent requests</span>
             </li>
           </ul>
-
-          <button className="pricing-action-btn blue-action-btn" onClick={() => handlePurchase("Growth")}>
-            Subscribe
-          </button>
         </div>
 
         {/* PRO Card (retains pro-highlighted green theme, Top Badge: "Best value") */}
@@ -293,24 +189,7 @@ export default function PricingPage() {
           </div>
           <div className="pricing-spec-row" style={{ marginBottom: "20px" }}>
             <span className="spec-label">Concurrency: </span>
-            <span className="spec-val-bold">100</span>
-          </div>
-
-          <div className="pricing-price-display">
-            <span className="price-amount">{getPriceText("Pro")}</span>
-            <span className="price-period">/mo</span>
-          </div>
-
-          <div className="card-billing-toggle-row">
-            <label className="pricing-mini-switch">
-              <input
-                type="checkbox"
-                checked={billingPeriod === "annual"}
-                onChange={(e) => setBillingPeriod(e.target.checked ? "annual" : "monthly")}
-              />
-              <span className="mini-slider"></span>
-            </label>
-            <span className="mini-toggle-label">Billed yearly</span>
+            <span className="spec-val-bold">25</span>
           </div>
 
           <ul className="pricing-features-list">
@@ -320,13 +199,9 @@ export default function PricingPage() {
             </li>
             <li>
               <GiCheckMark className="pricing-check-icon" size={12} />
-              <span>100 concurrent requests</span>
+              <span>25 concurrent requests</span>
             </li>
           </ul>
-
-          <button className="pricing-action-btn green-action-btn" onClick={() => handlePurchase("Pro")}>
-            Subscribe
-          </button>
         </div>
 
       </section>
@@ -356,24 +231,6 @@ export default function PricingPage() {
               <span className="spec-label">Concurrency: </span>
               <span className="spec-val-bold">200</span>
             </div>
-
-            <div className="pricing-price-display">
-              <span className="price-amount">{getPriceText("Business")}</span>
-              <span className="price-period">/mo</span>
-            </div>
-
-            <div className="card-billing-toggle-row">
-              <label className="pricing-mini-switch">
-                <input
-                  type="checkbox"
-                  checked={billingPeriod === "annual"}
-                  onChange={(e) => setBillingPeriod(e.target.checked ? "annual" : "monthly")}
-                />
-                <span className="mini-slider"></span>
-              </label>
-              <span className="mini-toggle-label">Billed yearly</span>
-            </div>
-
             <ul className="pricing-features-list">
               <li>
                 <GiCheckMark className="pricing-check-icon" size={12} />
@@ -404,10 +261,6 @@ export default function PricingPage() {
               <span className="spec-val-bold">Custom</span>
             </div>
 
-            <div className="pricing-price-display">
-              <span className="price-amount">{getPriceText("Enterprise")}</span>
-            </div>
-
             <ul className="pricing-features-list" style={{ marginTop: "40px" }}>
               <li>
                 <GiCheckMark className="pricing-check-icon" size={12} />
@@ -432,22 +285,35 @@ export default function PricingPage() {
       </section>
 
       {/* Intermediate Trial CTA Section */}
-      <section className="trial-cta-section">
-        <div className="trial-cta-card">
-          <h2 className="trial-cta-title">Start scraping in 60 seconds</h2>
-          <p className="trial-cta-desc">
-            500 free requests/month. No credit card required. JS rendered + residential IP from day one.
-          </p>
-          <div className="trial-cta-buttons">
-            <button className="cta-btn-primary" onClick={() => navigate(ROUTE.SIGNUP)}>
-              Get free API key →
-            </button>
-            <button className="cta-btn-secondary" onClick={() => window.open("https://docs.gcrawl.ai", "_blank")}>
-              View documentation
-            </button>
-          </div>
+     <section className="trial-cta-section">
+      <div className="trial-cta-card">
+        <h2 className="trial-cta-title">
+          Start{" "}
+          <span className={`rotating-word ${visible ? "visible" : "hidden"}`}>
+            {ROTATING_WORDS[index]}
+          </span>{" "}
+          in 60 seconds
+        </h2>
+        <p className="trial-cta-desc">
+          500 free requests/month. No credit card required. JS rendered +
+          residential IP from day one.
+        </p>
+        <div className="trial-cta-buttons">
+          <button
+            className="cta-btn-primary"
+            onClick={() => navigate(ROUTE.SIGNUP)}
+          >
+            Get free API key →
+          </button>
+          <button
+            className="cta-btn-secondary"
+            onClick={() => window.open("https://docs.gcrawl.ai", "_blank")}
+          >
+            View documentation
+          </button>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* Top-ups Section */}
       <section className="topups-section-wrapper">

@@ -144,28 +144,56 @@ export default function useAxios<T = any, R = any>({
 
       const token = Cookies.get("token");
 
-      if (!isAuthEndpoint && !token) {
+      const isPublicAction = ["SCRAPE", "CRAWL", "MAP", "SEARCH", "SCREENSHOT"].includes(endpoint || "");
+      if (!isAuthEndpoint && !token && !isPublicAction) {
         handleSessionExpiry();
         setLoading(false);
         return null;
       }
 
+      let recaptchaToken = "";
+      if (!token && isPublicAction) {
+        try {
+          recaptchaToken = await new Promise<string>((resolve, reject) => {
+            if (typeof window !== "undefined" && (window as any).grecaptcha) {
+              (window as any).grecaptcha.ready(() => {
+                const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LfUNBMtAAAAAAzZ8HCABf7yO-dmM9As_MBVZMkz';
+                (window as any).grecaptcha.execute(siteKey, { action: endpoint?.toLowerCase() || 'action' })
+                  .then((resToken: string) => {
+                    resolve(resToken);
+                  })
+                  .catch((err: any) => reject(err));
+              });
+            } else {
+              reject(new Error("reCAPTCHA script not loaded"));
+            }
+          });
+        } catch (error) {
+          console.error("ReCAPTCHA error:", error);
+          toast.error("Failed security check.");
+          setLoading(false);
+          return null;
+        }
+      }
+
       /* -------------------------------------------------------------------------- */
       /*                                  HEADERS                                   */
       /* -------------------------------------------------------------------------- */
-
+      console.log(config?.isFormData)
+      console.log(token)
+      console.log(recaptchaToken)
       const headers = config?.isFormData
-        ? {
-          ...(config?.headers ?? {}),
-          Authorization: token ? `Bearer ${token}` : "",
-        }
-        : {
-          "Content-Type": "application/json",
-
-          Authorization: token ? `Bearer ${token}` : "",
-
-          ...(config?.headers ?? {}),
-        };
+  ? {
+      ...(config?.headers ?? {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(recaptchaToken ? { "recaptcha-token": recaptchaToken } : {}),
+    }
+  : {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(recaptchaToken ? { "recaptcha-token": recaptchaToken } : {}),
+      ...(config?.headers ?? {}),
+    };
 
       /* -------------------------------------------------------------------------- */
       /*                               AXIOS REQUEST                                */
@@ -180,6 +208,19 @@ export default function useAxios<T = any, R = any>({
         isFormData: _isFormData,
         ...restConfig
       } = (config ?? {}) as AxiosConfig<R> & Record<string, unknown>;
+
+      let requestData = config?.data ?? payload;
+      if (recaptchaToken && !config?.isFormData) {
+        if (!requestData || typeof requestData !== 'object') {
+          requestData = {} as R;
+        }
+        requestData = { 
+          ...(requestData as object)
+        } as any;
+      }
+
+      // console.log("SENDING REQUEST WITH HEADERS:", headers);
+      // console.log("SENDING REQUEST WITH DATA:", requestData);
 
       const response: AxiosResponse<any> =
         await axios.request({
@@ -197,7 +238,7 @@ export default function useAxios<T = any, R = any>({
 
           headers,
 
-          data: config?.data ?? payload,
+          data: requestData,
 
           ...restConfig,
         });

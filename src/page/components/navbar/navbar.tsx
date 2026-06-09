@@ -141,19 +141,6 @@ export default function Navbar({ activePage }: NavbarProps) {
                 </div>
               </div>
 
-              {/* Parse Item */}
-              <div
-                className="products-dropdown-item"
-                onClick={() => { navigate(ROUTE.PLAYGROUND, { state: { tab: "parse" } }); setShowProductsDropdown(false); }}
-              >
-                <div className="products-dropdown-icon">
-                  <FaCode style={{ color: "#f59e0b", fontSize: "16px" }} />
-                </div>
-                <div className="products-dropdown-content">
-                  <span className="products-dropdown-title" style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "2px" }}>Parse</span>
-                  <span style={{ fontSize: "12px", color: "var(--text-secondary)", fontWeight: 400 }}>Clean & structure extracted tags</span>
-                </div>
-              </div>
             </div>
           )}
         </div>

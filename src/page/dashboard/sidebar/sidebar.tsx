@@ -9,7 +9,6 @@ import { FiHome } from "react-icons/fi";
 import { FiSearch } from "react-icons/fi";
 import { FaRegFileCode, FaBug, FaKey, FaGear } from "react-icons/fa6"
 import { LiaLinkSolid } from "react-icons/lia";
-import { HiOutlineDocumentMagnifyingGlass } from "react-icons/hi2";
 import { RxActivityLog } from "react-icons/rx";
 import { SiGoogleanalytics } from "react-icons/si";
 
@@ -123,19 +122,6 @@ export default function Sidebar() {
               <FaRegFileCode />
             </span>
             <span className="nav-label">Scrape a web page</span>
-          </div>
-        </div>
-
-        {/* Parse a File */}
-        <div
-          className={`nav-item ${currentView === "parse" ? "active" : ""}`}
-          onClick={() => handleNavigation("parse")}
-        >
-          <div className="nav-item-left">
-            <span className="nav-icon">
-              <HiOutlineDocumentMagnifyingGlass />
-            </span>
-            <span className="nav-label">Parse a file</span>
           </div>
         </div>
 

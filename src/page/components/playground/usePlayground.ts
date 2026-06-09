@@ -10,7 +10,7 @@ import { useWebSocket } from "./websocket";
 /*                                   TYPES                                    */
 /* -------------------------------------------------------------------------- */
 
-export type TabType = "search" | "scrape" | "parse" | "map" | "crawl";
+export type TabType = "search" | "scrape" | "map" | "crawl";
 export type FormatType = "Markdown" | "HTML" | "Screenshot" | "Images" | "SEO";
 
 export interface ScrapedPage {
@@ -32,6 +32,7 @@ export interface ScrapedPage {
 export interface PlaygroundProps {
   initialTab?: TabType;
   hideHeader?: boolean;
+  isLanding?: boolean;
   onTabChange?: (tab: TabType) => void;
 }
 
@@ -48,6 +49,7 @@ export interface PlaygroundProps {
 export default function usePlayground({
   initialTab,
   hideHeader = false,
+  isLanding = false,
   onTabChange,
 }: PlaygroundProps = {}) {
   const location = useLocation();
@@ -211,8 +213,6 @@ export default function usePlayground({
         return "Start search";
       case "scrape":
         return "Start scraping";
-      case "parse":
-        return "Start parsing";
       case "map":
         return "Generate map";
       case "crawl":
@@ -351,7 +351,7 @@ export default function usePlayground({
 
   const links = ["map"]
   const proxy =["map","crawl", "scrape"]
-  const All = ["scrape","parse","crawl"]
+  const All = ["scrape","crawl"]
   const handleRunAction = () => {
     if (!urlInput.trim()) {
       toast("Please enter a URL to analyze!", { icon: "⚠️" });
@@ -646,6 +646,7 @@ export default function usePlayground({
 
     // Props pass-through for the UI
     hideHeader,
+    isLanding,
     submittedUrl,
   };
 }

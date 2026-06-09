@@ -15,6 +15,24 @@
   margin-bottom: 16px;
 }
 
+.rotating-word {
+  display: inline-block;
+  width: 190px;
+  text-align: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  color: #38bdf8; /* or match your brand accent */
+}
+
+.rotating-word.hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.rotating-word.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .pricing-pill-badge {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;

@@ -10,6 +10,7 @@ interface MapUIProps {
   getActivePage: () => ScrapedPage | null;
   getHostname: (url: string) => string;
   submittedUrl: string;
+  isLanding?: boolean;
 }
 
 export default function MapUI({
@@ -17,7 +18,8 @@ export default function MapUI({
   isLoading,
   getActivePage,
   getHostname,
-  submittedUrl
+  submittedUrl,
+  isLanding
 }: MapUIProps) {
   const activePage = getActivePage();
   const linksData = activePage?.links;
@@ -117,7 +119,7 @@ export default function MapUI({
     }
   };
   return (
-    <div className="map-results-wrapper animate-slide-up">
+    <div className="map-results-wrapper animate-slide-up" style={{ width: isLanding ? '100%' : undefined }}>
       {/* Top Header Bar */}
       <div className="map-top-bar">
 

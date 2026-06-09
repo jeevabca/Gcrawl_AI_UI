@@ -85,15 +85,6 @@ const mockLogs: ActivityLogItem[] = [
     credits: 3,
     date: "May 17, 26",
     time: "4:30 PM",
-  },
-  {
-    id: "log_c7a11863908h",
-    endpoint: "/PARSE",
-    url: "https://en.wikipedia.org/wiki/Web_scraping",
-    status: "FAILED",
-    credits: 0,
-    date: "May 16, 26",
-    time: "6:15 PM",
   }
 ];
 
@@ -187,7 +178,7 @@ export default function Activitylogs() {
             </button>
             {showEndpointDropdown && (
               <div className="custom-dropdown-menu">
-                {["All Endpoints", "/SCRAPE", "/SEARCH", "/CRAWL", "/MAP", "/PARSE"].map((opt) => (
+                {["All Endpoints", "/SCRAPE", "/SEARCH", "/CRAWL", "/MAP"].map((opt) => (
                   <div
                     key={opt}
                     className={`dropdown-item ${selectedEndpoint === opt ? "selected" : ""}`}

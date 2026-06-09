@@ -420,6 +420,7 @@ export default function Playground(props: PlaygroundProps = {}) {
 
     // Props
     hideHeader,
+    isLanding,
     submittedUrl,
   } = usePlayground(props);
 
@@ -480,26 +481,26 @@ export default function Playground(props: PlaygroundProps = {}) {
 
       <div className="playground-content-section" style={hideHeader ? { marginTop: 0, paddingTop: 0 } : {}}>
         {/* Category Pill Labels */}
-        <div className="pill-labels-container">
-          <span className="pill-label pill-group-discover">DISCOVER</span>
-          <span className="pill-label pill-group-extract">EXTRACT</span>
-          <span className="pill-label pill-group-crawl">CRAWL</span>
-        </div>
+        {!isLanding && (
+          <div className="pill-labels-container">
+            <span className="pill-label pill-group-discover">DISCOVER</span>
+            <span className="pill-label pill-group-extract">EXTRACT</span>
+            <span className="pill-label pill-group-crawl">CRAWL</span>
+          </div>
+        )}
 
         {/* Custom Dashboard Header when in Dashboard */}
-        {hideHeader && (
+        {hideHeader && !isLanding && (
           <div className="dashboard-heading-section" style={{ marginBottom: "20px" }}>
             <h1 className="dashboard-title" style={{ textTransform: "capitalize" }}>
               {activeTab === "search" ? "Search the web" :
                 activeTab === "scrape" ? "Scrape a web page" :
-                  activeTab === "parse" ? "Parse a file" :
                     activeTab === "map" ? "Map website links" :
                       "Crawl entire website"}
             </h1>
             <p className="dashboard-subtitle">
               {activeTab === "search" ? "Search the web using a text query." :
                 activeTab === "scrape" ? "Scrape and convert any URL into clean structured LLM-ready data." :
-                  activeTab === "parse" ? "Parse PDFs, documents, spreadsheet data, and static files securely." :
                     activeTab === "map" ? "Map out and index all accessible links in a site in seconds." :
                       "Recursively crawl all pages in a domain and extract clean structured datasets."}
             </p>
@@ -533,20 +534,6 @@ export default function Playground(props: PlaygroundProps = {}) {
             </button>
             <div className="tab-tooltip">
               Scrapes only the specified URL without scrapping subpages. Outputs the content from the page.
-            </div>
-          </div>
-
-          <div className="tab-wrapper">
-            <button
-              className={`pill-tab ${activeTab === "parse" ? "active" : ""}`}
-              onClick={() => handleTabClick("parse")}
-            >
-              <FaCode className={`tab-icon ${activeTab === "parse" ? "active" : ""}`} />
-              Parse
-
-            </button>
-            <div className="tab-tooltip">
-              Upload a PDF, DOCX, XLSX, or HTML file and get clean markdown. Powered by /parse.
             </div>
           </div>
 
@@ -760,8 +747,7 @@ export default function Playground(props: PlaygroundProps = {}) {
               <div className="loading-main-label" style={{ fontSize: "16px", fontWeight: 700 }}>
                 {activeTab === "crawl" ? "Crawling Site..." : 
                  activeTab === "search" ? "Searching the Web..." :
-                 activeTab === "map" ? "Mapping Site Links..." :
-                 activeTab === "parse" ? "Parsing Files..." : "Scraping URL..."}
+                 activeTab === "map" ? "Mapping Site Links..." : "Scraping URL..."}
               </div>
               <div className="loading-sub-log">Connecting to agent and running requested extraction formats...</div>
             </div>
@@ -790,6 +776,7 @@ export default function Playground(props: PlaygroundProps = {}) {
           getActivePage={getActivePage}
           getHostname={getHostname}
           submittedUrl={submittedUrl}
+          isLanding={isLanding}
         />
 
         {/* SEARCH RESULTS UI */}
@@ -800,6 +787,7 @@ export default function Playground(props: PlaygroundProps = {}) {
           getHostname={getHostname}
           setUrlInput={setUrlInput}
           setActiveTab={setActiveTab}
+          isLanding={isLanding}
         />
 
       </div>

@@ -11,6 +11,7 @@ interface SearchUIProps {
   getHostname: (url: string) => string;
   setUrlInput: (url: string) => void;
   setActiveTab: (tab: any) => void;
+  isLanding?: boolean;
 }
 
 export default function SearchUI({
@@ -20,6 +21,7 @@ export default function SearchUI({
   getHostname,
   setUrlInput,
   setActiveTab,
+  isLanding,
 }: SearchUIProps) {
   const activePage = getActivePage();
   const searchData = activePage?.searchData;
@@ -29,7 +31,7 @@ export default function SearchUI({
   }
 
   return (
-    <div className="search-results-wrapper animate-slide-up">
+    <div className="search-results-wrapper animate-slide-up" style={{ width: isLanding ? '100%' : undefined }}>
       <div className="search-header-container">
         <div>
           <h2 className="search-title">

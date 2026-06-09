@@ -39,11 +39,10 @@ export default function Dashboard() {
   };
 
   // Dynamically render Playground active tabs inside Dashboard
-  if (view === "search" || view === "scrape" || view === "parse" || view === "map" || view === "crawl") {
-    let tab: "search" | "scrape" | "parse" | "map" | "crawl" = "scrape";
+  if (view === "search" || view === "scrape" || view === "map" || view === "crawl") {
+    let tab: "search" | "scrape" | "map" | "crawl" = "scrape";
     if (view === "search") tab = "search";
     else if (view === "scrape") tab = "scrape";
-    else if (view === "parse") tab = "parse";
     else if (view === "map") tab = "map";
     else if (view === "crawl") tab = "crawl";
 
