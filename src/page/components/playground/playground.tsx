@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import Cookies from "js-cookie";
 import "./playground.css";
 import {
   FiSearch,
@@ -47,6 +48,8 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
 
   const [activeTab, setActiveTab] = useState<string>(availableTabs[0] || "JSON");
   const [hasManuallySelected, setHasManuallySelected] = useState(false);
+
+  const isAuthenticated = !!Cookies.get("token");
 
   useEffect(() => {
     if (!hasManuallySelected && availableTabs.length > 0) {
@@ -236,6 +239,80 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
             <ImageGallery page={page} />
           ) : activeTab === "SEO" ? (
             <SeoViewer page={page} />
+          ) : !isAuthenticated ? (
+            <div style={{ position: 'relative', overflow: 'hidden', maxHeight: '350px' }}>
+              <pre style={{
+                margin: 0,
+                padding: 0,
+                backgroundColor: 'transparent',
+                color: '#374151',
+                fontSize: '13px',
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                whiteSpace: 'pre-wrap',
+              }}>
+                <code>{getTabContent()}</code>
+              </pre>
+              
+              {/* Blur and Fade Overlay */}
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                height: '220px',
+                background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 40%, rgba(255,255,255,1) 100%)',
+                backdropFilter: 'blur(3px)',
+                WebkitBackdropFilter: 'blur(3px)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                paddingBottom: '24px',
+                zIndex: 10,
+              }}>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '20px 32px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontWeight: 700, fontSize: '18px', color: '#111827' }}>
+                    Create an account to view full {activeTab.toLowerCase()}
+                  </div>
+                  <div style={{ color: '#4b5563', fontSize: '14px', maxWidth: '420px', lineHeight: '1.5' }}>
+                    Make a free account to access the complete {activeTab.toLowerCase()} output and all playground features. No credit card required.
+                  </div>
+                  <button 
+                    onClick={() => window.location.href = '/auth/signup'}
+                    style={{
+                      backgroundColor: '#064a91',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '10px 24px',
+                      fontSize: '15px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      marginTop: '12px',
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 4px 12px rgba(234, 88, 12, 0.25)'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = '#064a91';
+                      e.currentTarget.style.transform = 'translateY(-1px)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = '#4ea5ff';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    Sign up (500 free Requests / month)
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
             <pre style={{
               margin: 0,

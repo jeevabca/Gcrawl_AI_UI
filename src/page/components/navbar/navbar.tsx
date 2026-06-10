@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
 import { ROUTE } from "../../../routes/const";
 import { FiSearch, FiFile } from "react-icons/fi";
-import { FaBug, FaCode } from "react-icons/fa6";
+import { FaBug } from "react-icons/fa6";
 import { LiaLinkSolid } from "react-icons/lia";
 import { IoLogoGithub } from "react-icons/io";
 import { useGithubStars } from "../../../context/GithubStarsContext";
