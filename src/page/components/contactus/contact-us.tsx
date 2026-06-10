@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { ROUTE } from "../../../routes/const";
 import Footer from "../footer/footer";
@@ -8,6 +8,7 @@ import Navbar from "../navbar/navbar";
 
 export default function ContactUs() {
   const navigate = useNavigate();
+  const location = useLocation();
   
   // Form states
   const [name, setName] = useState("");
@@ -22,6 +23,13 @@ export default function ContactUs() {
   useEffect(() => {
     // Scroll window to the top on page load/navigation
     window.scrollTo(0, 0);
+
+    // Pre-fill message with selected plan from query params if available
+    const searchParams = new URLSearchParams(location.search);
+    const plan = searchParams.get("plan");
+    if (plan) {
+      setMessage(`I am interested in the ${plan} plan.\n\n`);
+    }
 
     // Contact page light mode enforcement (consistent with pricing layout)
     document.documentElement.classList.remove("dark-theme");

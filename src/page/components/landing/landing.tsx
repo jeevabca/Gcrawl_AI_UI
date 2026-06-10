@@ -3,6 +3,24 @@ import Footer from "../footer/footer";
 import Navbar from "../navbar/navbar";
 import Playground from "../playground/playground";
 import "./landing.css";
+import type { SsgOptions } from 'vite-plugin-ssg/utils';
+
+export const ssgOptions: SsgOptions = {
+  slug: 'index', 
+  routeUrl: '/app',
+  Head: () => (
+    <>
+      <title>Gcrawl AI - The Best Tool</title>
+      <meta name="description" content="A powerful AI platform to analyze and extract data." />
+      <meta property="og:title" content="GcrawlAI" />
+    </>
+  ),
+  context: async (children) => {
+    // Add router context so useNavigate works during SSG rendering
+    const { MemoryRouter } = await import('react-router-dom');
+    return <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>;
+  }
+};
 
 export default function Landing() {
   useEffect(() => {

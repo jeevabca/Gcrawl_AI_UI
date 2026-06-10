@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import type { Plugin } from 'vite'
+import { ssgPlugin } from 'vite-plugin-ssg'
 
 /**
  * Vite plugin that adds a server-side image download proxy.
@@ -62,5 +63,37 @@ function imageDownloadProxy(): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), imageDownloadProxy()],
+  plugins: [
+    react(), 
+    imageDownloadProxy(),
+    ssgPlugin({
+      // Point this to your pages directory or a specific file
+      pages: ['src/page/components/landing/landing.tsx'], 
+      // Put your SSG options here instead of the root `ssgOptions`
+      config: {
+        outDir: 'dist/static',
+        vite: {
+          plugins: [
+            {
+              name: 'mock-css-in-ssr',
+              enforce: 'pre',
+              resolveId(source, _importer, options) {
+                // Intercept CSS imports in SSR and route them to a virtual JS module
+                // so Vite's css-post plugin doesn't try to process them
+                if (options?.ssr && source.endsWith('.css')) {
+                  return '\0mock-css.js';
+                }
+              },
+              load(id, options) {
+                if (options?.ssr && id === '\0mock-css.js') {
+                  return 'export default {}';
+                }
+              }
+            }
+          ]
+        }
+      }
+    })
+  ],
 })
+

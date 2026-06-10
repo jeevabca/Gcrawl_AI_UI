@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
 import { ROUTE } from "../../../routes/const";
 import Footer from "../footer/footer";
 import Navbar from "../navbar/navbar";
@@ -10,7 +9,6 @@ import { GiCheckMark } from "react-icons/gi";
 
 export default function PricingPage() {
   const navigate = useNavigate();
-  const billingPeriod = "monthly";
   const ROTATING_WORDS = ["scraping", "crawling", "searching", "mapping"];
 
   const [index, setIndex] = useState(0);
@@ -42,10 +40,6 @@ export default function PricingPage() {
       }
     };
   }, []);
-
-  const handlePurchase = (plan: string) => {
-    toast.success(`Redirecting to checkout for ${plan} plan (${billingPeriod})...`);
-  };
 
   return (
     <div className="landing-container">
@@ -148,6 +142,10 @@ export default function PricingPage() {
               <span>5 concurrent requests</span>
             </li>
           </ul>
+
+          <button className="pricing-action-btn dark-action-btn" onClick={() => navigate(`${ROUTE.CONTACT}?plan=Starter`)} style={{ marginTop: "24px" }}>
+            Contact sales
+          </button>
         </div>
 
         {/* GROWTH Card (retains growth-highlighted blue theme, Top Badge: "Most popular") */}
@@ -175,6 +173,10 @@ export default function PricingPage() {
               <span>15 concurrent requests</span>
             </li>
           </ul>
+
+          <button className="pricing-action-btn dark-action-btn" onClick={() => navigate(`${ROUTE.CONTACT}?plan=Growth`)} style={{ marginTop: "24px" }}>
+            Contact sales
+          </button>
         </div>
 
         {/* PRO Card (retains pro-highlighted green theme, Top Badge: "Best value") */}
@@ -202,86 +204,12 @@ export default function PricingPage() {
               <span>25 concurrent requests</span>
             </li>
           </ul>
+
+          <button className="pricing-action-btn dark-action-btn" onClick={() => navigate(`${ROUTE.CONTACT}?plan=Pro`)} style={{ marginTop: "24px" }}>
+            Contact sales
+          </button>
         </div>
 
-      </section>
-
-      {/* Bottom Section - Scale Plans sidebar + 2 cards */}
-      <section className="pricing-bottom-section">
-        <div className="pricing-bottom-left">
-          <h3>Scale Plans</h3>
-          <p>High-volume plans for teams that need more power and dedicated support. Get access to higher rate limits, more concurrent browsers, and priority support.</p>
-          <a href="#" className="contact-link" onClick={(e) => { e.preventDefault(); navigate(ROUTE.CONTACT); }}>
-            Need more? Contact us <span style={{ marginLeft: "2px" }}>↗</span>
-          </a>
-        </div>
-
-        <div className="pricing-bottom-right">
-          
-          {/* BUSINESS Card */}
-          <div className="pricing-card-wrapper">
-            <div className="pricing-card-meta">BUSINESS</div>
-            <h2 className="pricing-card-title">Business</h2>
-            
-            <div className="pricing-spec-row">
-              <span className="spec-label">Requests: </span>
-              <span className="spec-val-blue">1M/mo</span>
-            </div>
-            <div className="pricing-spec-row" style={{ marginBottom: "20px" }}>
-              <span className="spec-label">Concurrency: </span>
-              <span className="spec-val-bold">200</span>
-            </div>
-            <ul className="pricing-features-list">
-              <li>
-                <GiCheckMark className="pricing-check-icon" size={12} />
-                <span>1M real requests/mo</span>
-              </li>
-              <li>
-                <GiCheckMark className="pricing-check-icon" size={12} />
-                <span>200 concurrent requests</span>
-              </li>
-            </ul>
-
-            <button className="pricing-action-btn dark-action-btn" onClick={() => handlePurchase("Business")}>
-              Subscribe
-            </button>
-          </div>
-
-          {/* ENTERPRISE Card */}
-          <div className="pricing-card-wrapper">
-            <div className="pricing-card-meta">ENTERPRISE</div>
-            <h2 className="pricing-card-title">Enterprise</h2>
-            
-            <div className="pricing-spec-row">
-              <span className="spec-label">Requests: </span>
-              <span className="spec-val-blue">Custom</span>
-            </div>
-            <div className="pricing-spec-row" style={{ marginBottom: "20px" }}>
-              <span className="spec-label">Concurrency: </span>
-              <span className="spec-val-bold">Custom</span>
-            </div>
-
-            <ul className="pricing-features-list" style={{ marginTop: "40px" }}>
-              <li>
-                <GiCheckMark className="pricing-check-icon" size={12} />
-                <span>Scrape unlimited pages</span>
-              </li>
-              <li>
-                <GiCheckMark className="pricing-check-icon" size={12} />
-                <span>Custom concurrent requests</span>
-              </li>
-              <li>
-                <GiCheckMark className="pricing-check-icon" size={12} />
-                <span>Dedicated support</span>
-              </li>
-            </ul>
-
-            <button className="pricing-action-btn dark-action-btn" onClick={() => navigate(ROUTE.CONTACT)}>
-              Contact sales
-            </button>
-          </div>
-
-        </div>
       </section>
 
       {/* Intermediate Trial CTA Section */}
@@ -314,106 +242,6 @@ export default function PricingPage() {
         </div>
       </div>
     </section>
-
-      {/* Top-ups Section */}
-      <section className="topups-section-wrapper">
-        <span className="topups-category">TOP-UPS</span>
-        <h2 className="topups-title">Need more requests?</h2>
-        <p className="topups-subtitle">
-          Top-up packs stack on your monthly plan. Buy manually or enable auto-recharge — never run out mid-scrape.
-        </p>
-
-        {/* Warning subscription banner */}
-        <div className="topups-warning-banner">
-          <div className="warning-banner-header">
-            <svg className="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "18px", height: "18px", color: "#d97706", marginRight: "8px" }}>
-              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-              <line x1="12" y1="9" x2="12" y2="13"></line>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-            <strong>Active subscription required.</strong>
-            <span>Top-up packs are available only on paid plans. Free plan users must upgrade first.</span>
-          </div>
-          <div className="warning-banner-pills">
-            <span className="banner-pill pill-red">✗ Free</span>
-            <span className="banner-pill pill-green">✓ Starter</span>
-            <span className="banner-pill pill-green">✓ Growth</span>
-            <span className="banner-pill pill-green">✓ Pro</span>
-            <span className="banner-pill pill-green">✓ Business</span>
-          </div>
-        </div>
-
-        <div className="topups-grid-container">
-          {/* Card 1: SMALL */}
-          <div className="topup-card-wrapper">
-            <span className="topup-meta">TOP-UP PACK — SMALL</span>
-            <h3 className="topup-credits-label">5,000 requests</h3>
-            <span className="topup-validity">Valid 6 months</span>
-
-            <div className="topup-price-row">
-              <span className="topup-price">$15</span>
-              <span className="topup-rate">$3.00/1K req</span>
-            </div>
-
-            <div className="topup-info-rows">
-              <div className="topup-info-row">
-                <span className="info-label">Available on: </span>
-                <span className="info-value-bold">Starter, Growth, Pro, Business</span>
-              </div>
-            </div>
-
-            <button className="topup-action-btn">
-              Purchase pack
-            </button>
-          </div>
-
-          {/* Card 2: MEDIUM */}
-          <div className="topup-card-wrapper">
-            <span className="topup-meta">TOP-UP PACK — MEDIUM</span>
-            <h3 className="topup-credits-label">20,000 requests</h3>
-            <span className="topup-validity">Valid 6 months</span>
-
-            <div className="topup-price-row">
-              <span className="topup-price">$39</span>
-              <span className="topup-rate">$1.95/1K req</span>
-            </div>
-
-            <div className="topup-info-rows">
-              <div className="topup-info-row">
-                <span className="info-label">Available on: </span>
-                <span className="info-value-bold">Growth, Pro, Business</span>
-              </div>
-            </div>
-
-            <button className="topup-action-btn">
-              Purchase pack
-            </button>
-          </div>
-
-          {/* Card 3: LARGE */}
-          <div className="topup-card-wrapper">
-            <span className="topup-meta">TOP-UP PACK — LARGE</span>
-            <h3 className="topup-credits-label">75,000 requests</h3>
-            <span className="topup-validity">Valid 6 months</span>
-
-            <div className="topup-price-row">
-              <span className="topup-price">$99</span>
-              <span className="topup-rate">$1.32/1K req</span>
-            </div>
-
-            <div className="topup-info-rows">
-              <div className="topup-info-row">
-                <span className="info-label">Available on: </span>
-                <span className="info-value-bold">Pro, Business</span>
-              </div>
-            </div>
-
-            <button className="topup-action-btn">
-              Purchase pack
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* Shared Footer */}
       <Footer />

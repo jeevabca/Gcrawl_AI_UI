@@ -152,12 +152,12 @@ export default function useAxios<T = any, R = any>({
       }
 
       let recaptchaToken = "";
-      if (!token && isPublicAction) {
+      if (!token) {
         try {
           recaptchaToken = await new Promise<string>((resolve, reject) => {
             if (typeof window !== "undefined" && (window as any).grecaptcha) {
               (window as any).grecaptcha.ready(() => {
-                const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LfUNBMtAAAAAAzZ8HCABf7yO-dmM9As_MBVZMkz';
+                const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
                 (window as any).grecaptcha.execute(siteKey, { action: endpoint?.toLowerCase() || 'action' })
                   .then((resToken: string) => {
                     resolve(resToken);
