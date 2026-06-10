@@ -56,6 +56,10 @@ export const endpoints = {
   SCREENSHOT:{
     url:"/api/v1/screenshot",
     method:methods.post
+  },
+  CONTACTUS:{
+    url:"/contact",
+    method:methods.post
   }
 };
 

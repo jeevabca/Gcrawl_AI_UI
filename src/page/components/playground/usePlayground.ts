@@ -475,6 +475,7 @@ export default function usePlayground({
             }
           } else {
             addLog("Direct response received. Parsing results...");
+            console.log("ACTUAL API DATA:", actualData);
             const singlePage: ScrapedPage = {
               pageIndex: 0,
               title: "Scraped Page",
@@ -499,6 +500,7 @@ export default function usePlayground({
                   ? JSON.stringify(actualData.links, null, 2)
                   : actualData.links,
             };
+            console.log("MAPPED SINGLE PAGE:", singlePage);
             setScrapedPages([singlePage]);
             setActivePageIndex(0);
             setIsLoading(false);

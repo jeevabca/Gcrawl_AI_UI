@@ -144,7 +144,7 @@ export default function useAxios<T = any, R = any>({
 
       const token = Cookies.get("token");
 
-      const isPublicAction = ["SCRAPE", "CRAWL", "MAP", "SEARCH", "SCREENSHOT"].includes(endpoint || "");
+      const isPublicAction = ["SCRAPE", "CRAWL", "MAP", "SEARCH", "SCREENSHOT", "GET_CRAWL_CONTENT"].includes(endpoint || "");
       if (!isAuthEndpoint && !token && !isPublicAction) {
         handleSessionExpiry();
         setLoading(false);
@@ -152,7 +152,8 @@ export default function useAxios<T = any, R = any>({
       }
 
       let recaptchaToken = "";
-      if (!token) {
+      const requiresRecaptcha = ["SCRAPE", "CRAWL", "MAP", "SEARCH", "SCREENSHOT"].includes(endpoint || "");
+      if (!token && requiresRecaptcha) {
         try {
           recaptchaToken = await new Promise<string>((resolve, reject) => {
             if (typeof window !== "undefined" && (window as any).grecaptcha) {
@@ -219,8 +220,8 @@ export default function useAxios<T = any, R = any>({
         } as any;
       }
 
-      // console.log("SENDING REQUEST WITH HEADERS:", headers);
-      // console.log("SENDING REQUEST WITH DATA:", requestData);
+      console.log("SENDING REQUEST WITH HEADERS:", headers);
+      console.log("SENDING REQUEST WITH DATA:", requestData);
 
       const response: AxiosResponse<any> =
         await axios.request({
