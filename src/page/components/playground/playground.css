@@ -203,6 +203,7 @@
 .tab-pill-bar {
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: var(--grey);
   border: 1px solid var(--border-color);
   border-radius: 9999px;
@@ -1270,3 +1271,94 @@
   background-color: var(--bg-page);
   color: var(--text-primary);
 }
+
+/* Markdown rendered content */
+.markdown-prose-container {
+  color: var(--text-primary, #374151);
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: 'Inter', system-ui, sans-serif;
+  padding: 0 10px;
+}
+
+.markdown-prose-container h1,
+.markdown-prose-container h2,
+.markdown-prose-container h3,
+.markdown-prose-container h4,
+.markdown-prose-container h5,
+.markdown-prose-container h6 {
+  color: var(--text-primary, #111827);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.markdown-prose-container p {
+  margin-bottom: 1em;
+}
+
+.markdown-prose-container a {
+  color: #0ea5e9;
+  text-decoration: underline;
+}
+
+.markdown-prose-container code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 85%;
+}
+
+.markdown-prose-container pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.markdown-prose-container pre {
+  background-color: #f3f4f6;
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1em;
+}
+
+.dark-theme .markdown-prose-container pre {
+  background-color: #1f2937;
+}
+
+.dark-theme .markdown-prose-container code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.markdown-prose-container blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1em;
+  color: #6b7280;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.dark-theme .markdown-prose-container blockquote {
+  border-left-color: #374151;
+  color: #9ca3af;
+}
+
+.markdown-prose-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+.markdown-prose-container th,
+.markdown-prose-container td {
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.dark-theme .markdown-prose-container th,
+.dark-theme .markdown-prose-container td {
+  border-color: #374151;
+}
+

@@ -10,7 +10,7 @@ import { IoLogoGithub } from "react-icons/io";
 import { useGithubStars } from "../../../context/GithubStarsContext";
 
 interface NavbarProps {
-  activePage?: "home" | "playground" | "docs" | "pricing";
+  activePage?: "home" | "playground" | "docs" | "pricing" | "blog";
 }
 
 export default function Navbar({ activePage }: NavbarProps) {
@@ -156,6 +156,10 @@ export default function Navbar({ activePage }: NavbarProps) {
           onClick={() => navigate(ROUTE.PRICING)}
         >
           Pricing
+        </a>
+         <a
+          className={`landing-nav-link ${activePage === "pricing" ? "active" : ""}`}>
+          Blog
         </a>
       </div>
 

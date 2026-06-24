@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./playground.css";
 import {
@@ -10,6 +11,9 @@ import {
   FiGlobe,
   FiCopy,
   FiDownload,
+  FiCamera,
+  FiEye,
+  FiEyeOff,
 } from "react-icons/fi";
 import { FaRegFileCode, FaBug, FaCode } from "react-icons/fa6";
 import { LiaLinkSolid } from "react-icons/lia";
@@ -17,6 +21,8 @@ import { LiaLinkSolid } from "react-icons/lia";
 import MapPopup from "./map/mappopup";
 import MapUI from "./map/map";
 import ImageGallery from "./images/image";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import SeoViewer from "./seo/seo";
 import SearchPopup from "./search/searchpopup";
 import SearchUI from "./search/search";
@@ -27,6 +33,7 @@ import usePlayground from "./usePlayground";
 import type { PlaygroundProps } from "./usePlayground";
 import { getHostname } from "../../../utils/helper";
 import Loader from "../../../components/loader/playground_loader";
+import ReportIssue from "./report_issue/report_issue";
 
 interface PageResultCardProps {
   page: any;
@@ -36,6 +43,8 @@ interface PageResultCardProps {
 }
 
 function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCardProps) {
+  const navigate = useNavigate();
+
   // Determine available tabs
   const availableTabs: string[] = [];
   if (page.markdown_content || page.markdown) availableTabs.push("Markdown");
@@ -48,6 +57,7 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
 
   const [activeTab, setActiveTab] = useState<string>(availableTabs[0] || "JSON");
   const [hasManuallySelected, setHasManuallySelected] = useState(false);
+  const [showMarkdownPreview, setShowMarkdownPreview] = useState(false);
 
   const isAuthenticated = !!Cookies.get("token");
 
@@ -176,8 +186,10 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
         padding: '0 24px',
         backgroundColor: '#fafafa',
         borderBottom: '1px solid #e5e7eb',
-        gap: '16px'
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}>
+        <div style={{ display: 'flex', gap: '16px' }}>
         {availableTabs.map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -209,6 +221,31 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
             </button>
           );
         })}
+        </div>
+        
+        {activeTab === "Markdown" && (
+          <button
+            onClick={() => setShowMarkdownPreview(!showMarkdownPreview)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              background: showMarkdownPreview ? "#f3f4f6" : "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "6px",
+              padding: "4px 10px",
+              fontSize: "12px",
+              fontWeight: 600,
+              color: "#374151",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+            }}
+          >
+            {showMarkdownPreview ? <FiEyeOff size={14} /> : <FiEye size={14} />}
+            <span>{showMarkdownPreview ? "Raw Markdown" : "Live Preview"}</span>
+          </button>
+        )}
       </div>
 
       {/* Content Display */}
@@ -221,37 +258,59 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
           maxHeight: '400px',
           overflowY: 'auto'
         }}>
-          {activeTab === "Screenshot" ? (
-            getTabContent() ? (
-              <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                <div style={{ maxWidth: '100%', maxHeight: '500px', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                  <img 
-                    src={getTabContent()} 
-                    alt="Screenshot" 
-                    style={{ display: 'block', maxWidth: '100%', height: 'auto' }} 
-                  />
-                </div>
-              </div>
-            ) : (
-              <div style={{ color: '#6b7280', fontSize: '13px' }}>No screenshot available</div>
-            )
-          ) : activeTab === "Images" ? (
-            <ImageGallery page={page} />
-          ) : activeTab === "SEO" ? (
-            <SeoViewer page={page} />
-          ) : !isAuthenticated ? (
+          {!isAuthenticated ? (
             <div style={{ position: 'relative', overflow: 'hidden', maxHeight: '350px' }}>
-              <pre style={{
-                margin: 0,
-                padding: 0,
-                backgroundColor: 'transparent',
-                color: '#374151',
-                fontSize: '13px',
-                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-                whiteSpace: 'pre-wrap',
-              }}>
-                <code>{getTabContent()}</code>
-              </pre>
+              {activeTab === "Screenshot" ? (
+                getTabContent() ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                    <div style={{ maxWidth: '100%', maxHeight: '350px', overflow: 'hidden', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                      <img 
+                        src={getTabContent()} 
+                        alt="Screenshot" 
+                        style={{ display: 'block', maxWidth: '100%', height: 'auto' }} 
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ color: '#6b7280', fontSize: '13px' }}>No screenshot available</div>
+                )
+              ) : activeTab === "Images" ? (
+                <ImageGallery page={page} />
+              ) : activeTab === "SEO" ? (
+                <SeoViewer page={page} />
+              ) : activeTab === "Markdown" ? (
+                showMarkdownPreview ? (
+                  <div className="markdown-prose-container" style={{ textAlign: "left" }}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {getTabContent()}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <pre style={{
+                    margin: 0,
+                    padding: 0,
+                    backgroundColor: 'transparent',
+                    color: '#374151',
+                    fontSize: '13px',
+                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                    whiteSpace: 'pre-wrap',
+                  }}>
+                    <code>{getTabContent()}</code>
+                  </pre>
+                )
+              ) : (
+                <pre style={{
+                  margin: 0,
+                  padding: 0,
+                  backgroundColor: 'transparent',
+                  color: '#374151',
+                  fontSize: '13px',
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  whiteSpace: 'pre-wrap',
+                }}>
+                  <code>{getTabContent()}</code>
+                </pre>
+              )}
               
               {/* Blur and Fade Overlay */}
               <div style={{
@@ -285,7 +344,7 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
                     Make a free account to access the complete {activeTab.toLowerCase()} output and all playground features. No credit card required.
                   </div>
                   <button 
-                    onClick={() => window.location.href = '/auth/signup'}
+                    onClick={() => navigate('/auth/signup')}
                     style={{
                       backgroundColor: '#064a91',
                       color: 'white',
@@ -314,18 +373,59 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
               </div>
             </div>
           ) : (
-            <pre style={{
-              margin: 0,
-              padding: 0,
-              backgroundColor: 'transparent',
-              color: '#374151',
-              fontSize: '13px',
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-              overflowX: 'auto',
-              whiteSpace: 'pre-wrap'
-            }}>
-              <code>{getTabContent()}</code>
-            </pre>
+            activeTab === "Screenshot" ? (
+              getTabContent() ? (
+                <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                  <div style={{ maxWidth: '100%', maxHeight: '500px', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                    <img 
+                      src={getTabContent()} 
+                      alt="Screenshot" 
+                      style={{ display: 'block', maxWidth: '100%', height: 'auto' }} 
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div style={{ color: '#6b7280', fontSize: '13px' }}>No screenshot available</div>
+              )
+            ) : activeTab === "Images" ? (
+              <ImageGallery page={page} />
+            ) : activeTab === "SEO" ? (
+              <SeoViewer page={page} />
+            ) : activeTab === "Markdown" ? (
+              showMarkdownPreview ? (
+                <div className="markdown-prose-container" style={{ textAlign: "left" }}>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {getTabContent()}
+                  </ReactMarkdown>
+                </div>
+              ) : (
+                <pre style={{
+                  margin: 0,
+                  padding: 0,
+                  backgroundColor: 'transparent',
+                  color: '#374151',
+                  fontSize: '13px',
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  overflowX: 'auto',
+                  whiteSpace: 'pre-wrap'
+                }}>
+                  <code>{getTabContent()}</code>
+                </pre>
+              )
+            ) : (
+              <pre style={{
+                margin: 0,
+                padding: 0,
+                backgroundColor: 'transparent',
+                color: '#374151',
+                fontSize: '13px',
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                overflowX: 'auto',
+                whiteSpace: 'pre-wrap'
+              }}>
+                <code>{getTabContent()}</code>
+              </pre>
+            )
           )}
         </div>
       </div>
@@ -487,6 +587,7 @@ export default function Playground(props: PlaygroundProps = {}) {
     // Result state
     scrapedPages,
     isLoading,
+    apiCallTime,
 
     // Derived helpers
     getActivePage,
@@ -579,6 +680,7 @@ export default function Playground(props: PlaygroundProps = {}) {
               {activeTab === "search" ? "Search the web using a text query." :
                 activeTab === "scrape" ? "Scrape and convert any URL into clean structured LLM-ready data." :
                     activeTab === "map" ? "Map out and index all accessible links in a site in seconds." :
+                      activeTab === "screenshot" ? "Take a screenshot of any website." :
                       "Recursively crawl all pages in a domain and extract clean structured datasets."}
             </p>
           </div>
@@ -586,21 +688,6 @@ export default function Playground(props: PlaygroundProps = {}) {
 
         {/* Dynamic Nav Tabs Pill */}
         <div className="tab-pill-bar">
-          <div className="tab-wrapper">
-            <button
-              className={`pill-tab ${activeTab === "search" ? "active" : ""}`}
-              onClick={() => handleTabClick("search")}
-            >
-              <FiSearch className={`tab-icon ${activeTab === "search" ? "active" : ""}`} />
-              Search
-            </button>
-            <div className="tab-tooltip">
-              Search the web using a text query.
-            </div>
-          </div>
-
-          <div className="pill-divider" />
-
           <div className="tab-wrapper">
             <button
               className={`pill-tab ${activeTab === "scrape" ? "active" : ""}`}
@@ -629,6 +716,8 @@ export default function Playground(props: PlaygroundProps = {}) {
             </div>
           </div>
 
+          <div className="pill-divider" />
+
           <div className="tab-wrapper">
             <button
               className={`pill-tab ${activeTab === "crawl" ? "active" : ""}`}
@@ -639,6 +728,36 @@ export default function Playground(props: PlaygroundProps = {}) {
             </button>
             <div className="tab-tooltip">
               Crawls a URL and all its accessible subpages, outputting the content from each page.
+            </div>
+          </div>
+
+          <div className="pill-divider" />
+
+          <div className="tab-wrapper">
+            <button
+              className={`pill-tab ${activeTab === "screenshot" ? "active" : ""}`}
+              onClick={() => handleTabClick("screenshot")}
+            >
+              <FiCamera className={`tab-icon ${activeTab === "screenshot" ? "active" : ""}`} />
+              Screenshot
+            </button>
+            <div className="tab-tooltip">
+              Take a screenshot of a website with specific options.
+            </div>
+          </div>
+
+          <div className="pill-divider" />
+
+          <div className="tab-wrapper">
+            <button
+              className={`pill-tab ${activeTab === "search" ? "active" : ""}`}
+              onClick={() => handleTabClick("search")}
+            >
+              <FiSearch className={`tab-icon ${activeTab === "search" ? "active" : ""}`} />
+              Search
+            </button>
+            <div className="tab-tooltip">
+              Search the web using a text query.
             </div>
           </div>
         </div>
@@ -671,7 +790,7 @@ export default function Playground(props: PlaygroundProps = {}) {
           <div className="card-controls-row">
             <div className="controls-left-group" style={{ position: "relative" }}>
               {/* Settings Toggle Sliders */}
-              {activeTab !== "scrape" && (
+              {activeTab !== "scrape" && activeTab !== "screenshot" && (
                 <button
                   className={`control-square-btn ${activeTab === "map" ? (showMapPopup ? "active" : "") : activeTab === "search" ? (showSearchPopup ? "active" : "") : activeTab === "crawl" ? (showCrawlPopup ? "active" : "") : (showSettings ? "active" : "")}`}
                   onClick={() => {
@@ -725,7 +844,7 @@ export default function Playground(props: PlaygroundProps = {}) {
               {/* Format Dropdown Selector */}
               
               <div className="format-dropdown-wrapper">
-                {activeTab !== "search" && activeTab !== "map" && (
+                {activeTab !== "search" && activeTab !== "map" && activeTab !== "screenshot" && (
                   <button
                     className={`format-picker-btn ${showFormatModal ? "focused" : ""}`}
                     onClick={handleFormatClick}
@@ -740,44 +859,59 @@ export default function Playground(props: PlaygroundProps = {}) {
                   </button>
                 )}
 
-                <FormatPopup
-                  isOpen={showFormatModal}
-                  onClose={() => setShowFormatModal(false)}
-                  selectedFormats={selectedFormats}
-                  onToggleFormat={handleToggleFormat}
-                  jsRender={jsRender}
-                  setJsRender={setJsRender}
-                  renderTimeout={renderTimeout}
-                  setRenderTimeout={setRenderTimeout}
-                  autoScroll={autoScroll}
-                  setAutoScroll={setAutoScroll}
-                  scrollDelay={scrollDelay}
-                  setScrollDelay={setScrollDelay}
-                  maxScrolls={maxScrolls}
-                  setMaxScrolls={setMaxScrolls}
-                  markdownClean={markdownClean}
-                  setMarkdownClean={setMarkdownClean}
-                  htmlClean={htmlClean}
-                  setHtmlClean={setHtmlClean}
-                  removeExternalLinks={removeExternalLinks}
-                  setRemoveExternalLinks={setRemoveExternalLinks}
-                  relativeToAbsoluteLinks={relativeToAbsoluteLinks}
-                  setRelativeToAbsoluteLinks={setRelativeToAbsoluteLinks}
-                  removeDataImages={removeDataImages}
-                  setRemoveDataImages={setRemoveDataImages}
-                  ignoreTags={ignoreTags}
-                  setIgnoreTags={setIgnoreTags}
-                  screenshotFullPage={screenshotFullPage}
-                  setScreenshotFullPage={setScreenshotFullPage}
-                  screenshotFormat={screenshotFormat}
-                  setScreenshotFormat={setScreenshotFormat}
-                  screenshotQuality={screenshotQuality}
-                  setScreenshotQuality={setScreenshotQuality}
-                />
+                {activeTab === "screenshot" && (
+                  <button
+                    className={`format-picker-btn ${showFormatModal ? "focused" : ""}`}
+                    onClick={handleFormatClick}
+                    disabled={isLoading}
+                  >
+                    <FiSliders style={{ marginRight: "6px" }} />
+                    <span className="format-label-text">Options</span>
+                    <FiChevronDown />
+                  </button>
+                )}
+
+                {(activeTab === "scrape" || activeTab === "crawl" || activeTab === "screenshot") && (
+                  <FormatPopup
+                    isOpen={showFormatModal}
+                    onClose={() => setShowFormatModal(false)}
+                    selectedFormats={selectedFormats}
+                    onToggleFormat={handleToggleFormat}
+                    jsRender={jsRender}
+                    setJsRender={setJsRender}
+                    renderTimeout={renderTimeout}
+                    setRenderTimeout={setRenderTimeout}
+                    autoScroll={autoScroll}
+                    setAutoScroll={setAutoScroll}
+                    scrollDelay={scrollDelay}
+                    setScrollDelay={setScrollDelay}
+                    maxScrolls={maxScrolls}
+                    setMaxScrolls={setMaxScrolls}
+                    markdownClean={markdownClean}
+                    setMarkdownClean={setMarkdownClean}
+                    htmlClean={htmlClean}
+                    setHtmlClean={setHtmlClean}
+                    removeExternalLinks={removeExternalLinks}
+                    setRemoveExternalLinks={setRemoveExternalLinks}
+                    relativeToAbsoluteLinks={relativeToAbsoluteLinks}
+                    setRelativeToAbsoluteLinks={setRelativeToAbsoluteLinks}
+                    removeDataImages={removeDataImages}
+                    setRemoveDataImages={setRemoveDataImages}
+                    ignoreTags={ignoreTags}
+                    setIgnoreTags={setIgnoreTags}
+                    screenshotFullPage={screenshotFullPage}
+                    setScreenshotFullPage={setScreenshotFullPage}
+                    screenshotFormat={screenshotFormat}
+                    setScreenshotFormat={setScreenshotFormat}
+                    screenshotQuality={screenshotQuality}
+                    setScreenshotQuality={setScreenshotQuality}
+                    isScreenshotTab={activeTab === "screenshot"}
+                  />
+                )}
               </div>
 
               {/* Proxy Dropdown Selector */}
-              {(activeTab === "scrape" || activeTab === "crawl" || activeTab === "map") && (
+              {(activeTab === "scrape" || activeTab === "crawl" || activeTab === "map" || activeTab === "screenshot") && (
                 <div className="proxy-dropdown-wrapper">
                   <button
                     className={`proxy-picker-btn ${showProxyModal ? "focused" : ""}`}
@@ -803,6 +937,41 @@ export default function Playground(props: PlaygroundProps = {}) {
             </div>
 
             <div className="controls-right-group">
+              {activeTab === "crawl" && (isLoading || scrapedPages.length > 0) && (
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "4px 10px",
+                  backgroundColor: "rgba(6, 74, 145, 0.08)",
+                  border: "1px solid rgba(6, 74, 145, 0.2)",
+                  borderRadius: "8px",
+                  color: "var(--primary)",
+                  fontWeight: 700,
+                  fontSize: "12px",
+                  animation: isLoading ? "pulse 2s infinite" : "none"
+                }}>
+                  <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.5px", opacity: 0.8 }}>Crawled:</span>
+                  <span>{scrapedPages.length > 0 ? Math.min(scrapedPages.length, crawlMaxPages) : 0} / {crawlMaxPages}</span>
+                </div>
+              )}
+              {apiCallTime !== null && !isLoading && (
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "4px 10px",
+                  backgroundColor: "rgba(16, 185, 129, 0.08)",
+                  border: "1px solid rgba(16, 185, 129, 0.2)",
+                  borderRadius: "8px",
+                  color: "#10b981",
+                  fontWeight: 700,
+                  fontSize: "12px",
+                }}>
+                  <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.5px", opacity: 0.8 }}>Time:</span>
+                  <span>{(apiCallTime / 1000).toFixed(2)}s</span>
+                </div>
+              )}
               <button
                 className="action-trigger-btn"
                 onClick={handleRunAction}
@@ -824,11 +993,21 @@ export default function Playground(props: PlaygroundProps = {}) {
               <div className="loading-main-label" style={{ fontSize: "16px", fontWeight: 700 }}>
                 {activeTab === "crawl" ? "Crawling Site..." : 
                  activeTab === "search" ? "Searching the Web..." :
+                 activeTab === "screenshot" ? "Taking Screenshot..." :
                  activeTab === "map" ? "Mapping Site Links..." : "Scraping URL..."}
               </div>
               <div className="loading-sub-log">Connecting to agent and running requested extraction formats...</div>
             </div>
           </div>
+        )}
+
+        {/* REPORT ISSUE */}
+        {!isLoading && scrapedPages.length > 0 && (
+           <div style={{ display: 'flex', width: '160%', marginTop: '24px' }}>
+             <div style={{ width: '100%' }}>
+                <ReportIssue submittedUrl={submittedUrl} />
+             </div>
+           </div>
         )}
 
         {/* RESULTS CARD FEED */}

@@ -311,6 +311,7 @@ interface FormatPopupProps {
   setScreenshotFormat: (val: "jpg" | "png") => void;
   screenshotQuality: number;
   setScreenshotQuality: (val: number) => void;
+  isScreenshotTab?: boolean;
 }
 
 export const FormatPopup: React.FC<FormatPopupProps> = ({
@@ -346,6 +347,7 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
   setScreenshotFormat,
   screenshotQuality,
   setScreenshotQuality,
+  isScreenshotTab,
 }) => {
   const [closeHover, setCloseHover] = useState(false);
 
@@ -354,7 +356,7 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
   return (
     <div style={styles.formatModalCard} onClick={(e) => e.stopPropagation()}>
       <div style={styles.formatModalHeader}>
-        <span style={styles.formatModalTitle}>Format & Options</span>
+        <span style={styles.formatModalTitle}>{isScreenshotTab ? "Screenshot Options" : "Format & Options"}</span>
         <button
           style={{
             ...styles.formatModalClose,
@@ -370,90 +372,96 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
 
       <div style={styles.formatModalBody}>
         <div style={styles.formatList}>
-          {/* MARKDOWN FORMAT */}
-          <FormatRowItem
-            format="Markdown"
-            isSelected={selectedFormats.includes("Markdown")}
-            onToggle={onToggleFormat}
-            icon={<RiMarkdownFill style={{ width: "18px", height: "18px" }} />}
-          />
-          {selectedFormats.includes("Markdown") && (
-            <div style={styles.subSettingsPanel} onClick={(e) => e.stopPropagation()}>
-              <div style={styles.settingsRow}>
-                <span style={styles.settingsLabel}>Clean Markdown</span>
-                <ToggleSwitch checked={markdownClean} onChange={setMarkdownClean} />
-              </div>
-            </div>
-          )}
-
-          {/* HTML FORMAT */}
-          <FormatRowItem
-            format="HTML"
-            isSelected={selectedFormats.includes("HTML")}
-            onToggle={onToggleFormat}
-            icon={<RiCodeSSlashLine style={{ width: "18px", height: "18px" }} />}
-          />
-          {selectedFormats.includes("HTML") && (
-            <div style={styles.subSettingsPanel} onClick={(e) => e.stopPropagation()}>
-              <div style={styles.settingsRow}>
-                <span style={styles.settingsLabel}>Clean HTML</span>
-                <ToggleSwitch checked={htmlClean} onChange={setHtmlClean} />
-              </div>
-              <div style={styles.settingsRow}>
-                <span style={styles.settingsLabel}>Remove External Links</span>
-                <ToggleSwitch checked={removeExternalLinks} onChange={setRemoveExternalLinks} />
-              </div>
-              <div style={styles.settingsRow}>
-                <span style={styles.settingsLabel}>Relative to Absolute Links</span>
-                <ToggleSwitch checked={relativeToAbsoluteLinks} onChange={setRelativeToAbsoluteLinks} />
-              </div>
-              <div style={styles.settingsRow}>
-                <span style={styles.settingsLabel}>Remove Data Images</span>
-                <ToggleSwitch checked={removeDataImages} onChange={setRemoveDataImages} />
-              </div>
-              <div style={{ ...styles.settingsRow, flexDirection: "column" as const, alignItems: "flex-start", gap: "8px" }}>
-                <span style={styles.settingsLabel}>Ignore Tags</span>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                  {["header", "footer", "nav", "form", "iframe", ".hidden"].map((tag) => (
-                    <label 
-                      key={tag} 
-                      style={{ 
-                        display: "flex", 
-                        alignItems: "center", 
-                        gap: "4px", 
-                        fontSize: "12px", 
-                        color: "var(--text-primary)", 
-                        cursor: "pointer" 
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        style={{ cursor: "pointer", accentColor: "var(--primary)" }}
-                        checked={ignoreTags.includes(tag)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setIgnoreTags([...ignoreTags, tag]);
-                          } else {
-                            setIgnoreTags(ignoreTags.filter((t) => t !== tag));
-                          }
-                        }}
-                      />
-                      {tag}
-                    </label>
-                  ))}
+          {!isScreenshotTab && (
+            <>
+              {/* MARKDOWN FORMAT */}
+              <FormatRowItem
+                format="Markdown"
+                isSelected={selectedFormats.includes("Markdown")}
+                onToggle={onToggleFormat}
+                icon={<RiMarkdownFill style={{ width: "18px", height: "18px" }} />}
+              />
+              {selectedFormats.includes("Markdown") && (
+                <div style={styles.subSettingsPanel} onClick={(e) => e.stopPropagation()}>
+                  <div style={styles.settingsRow}>
+                    <span style={styles.settingsLabel}>Clean Markdown</span>
+                    <ToggleSwitch checked={markdownClean} onChange={setMarkdownClean} />
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
+
+              {/* HTML FORMAT */}
+              <FormatRowItem
+                format="HTML"
+                isSelected={selectedFormats.includes("HTML")}
+                onToggle={onToggleFormat}
+                icon={<RiCodeSSlashLine style={{ width: "18px", height: "18px" }} />}
+              />
+              {selectedFormats.includes("HTML") && (
+                <div style={styles.subSettingsPanel} onClick={(e) => e.stopPropagation()}>
+                  <div style={styles.settingsRow}>
+                    <span style={styles.settingsLabel}>Clean HTML</span>
+                    <ToggleSwitch checked={htmlClean} onChange={setHtmlClean} />
+                  </div>
+                  <div style={styles.settingsRow}>
+                    <span style={styles.settingsLabel}>Remove External Links</span>
+                    <ToggleSwitch checked={removeExternalLinks} onChange={setRemoveExternalLinks} />
+                  </div>
+                  <div style={styles.settingsRow}>
+                    <span style={styles.settingsLabel}>Relative to Absolute Links</span>
+                    <ToggleSwitch checked={relativeToAbsoluteLinks} onChange={setRelativeToAbsoluteLinks} />
+                  </div>
+                  <div style={styles.settingsRow}>
+                    <span style={styles.settingsLabel}>Remove Data Images</span>
+                    <ToggleSwitch checked={removeDataImages} onChange={setRemoveDataImages} />
+                  </div>
+                  <div style={{ ...styles.settingsRow, flexDirection: "column" as const, alignItems: "flex-start", gap: "8px" }}>
+                    <span style={styles.settingsLabel}>Ignore Tags</span>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                      {["header", "footer", "nav", "form", "iframe", ".hidden"].map((tag) => (
+                        <label 
+                          key={tag} 
+                          style={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            gap: "4px", 
+                            fontSize: "12px", 
+                            color: "var(--text-primary)", 
+                            cursor: "pointer" 
+                          }}
+                        >
+                          <input
+                            type="checkbox"
+                            style={{ cursor: "pointer", accentColor: "var(--primary)" }}
+                            checked={ignoreTags.includes(tag)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setIgnoreTags([...ignoreTags, tag]);
+                              } else {
+                                setIgnoreTags(ignoreTags.filter((t) => t !== tag));
+                              }
+                            }}
+                          />
+                          {tag}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {/* SCREENSHOT FORMAT */}
-          <FormatRowItem
-            format="Screenshot"
-            isSelected={selectedFormats.includes("Screenshot")}
-            onToggle={onToggleFormat}
-            icon={<RiScreenshot2Line style={{ width: "18px", height: "18px" }} />}
-          />
-          {selectedFormats.includes("Screenshot") && (
+          {(!isScreenshotTab) && (
+            <FormatRowItem
+              format="Screenshot"
+              isSelected={selectedFormats.includes("Screenshot")}
+              onToggle={onToggleFormat}
+              icon={<RiScreenshot2Line style={{ width: "18px", height: "18px" }} />}
+            />
+          )}
+          {(isScreenshotTab || selectedFormats.includes("Screenshot")) && (
             <div style={{
               ...styles.subSettingsPanel,
               display: "flex",
@@ -555,21 +563,25 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
             </div>
           )}
 
-          {/* SEO FORMAT */}
-          <FormatRowItem
-            format="SEO"
-            isSelected={selectedFormats.includes("SEO")}
-            onToggle={onToggleFormat}
-            icon={<TbSeo style={{ width: "18px", height: "18px" }} />}
-          />
+          {!isScreenshotTab && (
+            <>
+              {/* SEO FORMAT */}
+              <FormatRowItem
+                format="SEO"
+                isSelected={selectedFormats.includes("SEO")}
+                onToggle={onToggleFormat}
+                icon={<TbSeo style={{ width: "18px", height: "18px" }} />}
+              />
 
-          {/* IMAGES FORMAT */}
-          <FormatRowItem
-            format="Images"
-            isSelected={selectedFormats.includes("Images")}
-            onToggle={onToggleFormat}
-            icon={<RiImage2Line style={{ width: "18px", height: "18px" }} />}
-          />
+              {/* IMAGES FORMAT */}
+              <FormatRowItem
+                format="Images"
+                isSelected={selectedFormats.includes("Images")}
+                onToggle={onToggleFormat}
+                icon={<RiImage2Line style={{ width: "18px", height: "18px" }} />}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ import { useWebSocket } from "./websocket";
 /*                                   TYPES                                    */
 /* -------------------------------------------------------------------------- */
 
-export type TabType = "search" | "scrape" | "map" | "crawl";
+export type TabType = "search" | "scrape" | "map" | "crawl" | "screenshot";
 export type FormatType = "Markdown" | "HTML" | "Screenshot" | "Images" | "SEO";
 
 export interface ScrapedPage {
@@ -56,13 +56,29 @@ export default function usePlayground({
   const stateTab = location.state?.tab as TabType;
   const stateUrl = location.state?.url as string;
 
+  const PLAYGROUND_STATE_KEY = "gcrawl_playground_state";
+
   /* ---- Tab & URL state ---- */
-  const [activeTab, setActiveTab] = useState<TabType>(
-    stateTab || initialTab || "scrape"
-  );
-  const [urlInput, setUrlInput] = useState(
-    stateUrl ? stateUrl.replace(/^(https?:\/\/)/i, "") : ""
-  );
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    if (stateTab) return stateTab;
+    if (initialTab) return initialTab;
+    try {
+      const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
+      if (saved) return JSON.parse(saved).activeTab || "scrape";
+    } catch(e) {}
+    return "scrape";
+  });
+  
+  const [urlInput, setUrlInput] = useState(() => {
+    if (stateUrl) return stateUrl.replace(/^(https?:\/\/)/i, "");
+    try {
+      const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
+      if (saved && JSON.parse(saved).urlInput !== undefined) {
+        return JSON.parse(saved).urlInput;
+      }
+    } catch(e) {}
+    return "";
+  });
 
   /* ---- Format & popup state ---- */
   const [selectedFormats, setSelectedFormats] = useState<FormatType[]>([
@@ -119,14 +135,72 @@ export default function usePlayground({
   const [screenshotQuality, setScreenshotQuality] = useState(90);
 
   /* ---- Result state ---- */
-  const [scrapedPages, setScrapedPages] = useState<ScrapedPage[]>([]);
-  const [activePageIndex, setActivePageIndex] = useState<number>(0);
-  const [activeResultTab, setActiveResultTab] = useState<string>("");
+  const [scrapedPages, setScrapedPages] = useState<ScrapedPage[]>(() => {
+    try {
+      const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
+      if (saved) return JSON.parse(saved).scrapedPages || [];
+    } catch(e) {}
+    return [];
+  });
+  const [activePageIndex, setActivePageIndex] = useState<number>(() => {
+    try {
+      const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
+      if (saved) return JSON.parse(saved).activePageIndex || 0;
+    } catch(e) {}
+    return 0;
+  });
+  const [activeResultTab, setActiveResultTab] = useState<string>(() => {
+    try {
+      const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
+      if (saved) return JSON.parse(saved).activeResultTab || "";
+    } catch(e) {}
+    return "";
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const [submittedUrl, setSubmittedUrl] = useState<string>("");
+  const [submittedUrl, setSubmittedUrl] = useState<string>(() => {
+    try {
+      const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
+      if (saved) return JSON.parse(saved).submittedUrl || "";
+    } catch(e) {}
+    return "";
+  });
+  const [apiCallTime, setApiCallTime] = useState<number | null>(() => {
+    try {
+      const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
+      if (saved && JSON.parse(saved).apiCallTime !== undefined) {
+        return JSON.parse(saved).apiCallTime;
+      }
+    } catch(e) {}
+    return null;
+  });
+
+  /* ---- Sync state to sessionStorage ---- */
+  useEffect(() => {
+    const stateToSave = {
+      activeTab,
+      urlInput,
+      scrapedPages,
+      activePageIndex,
+      activeResultTab,
+      submittedUrl,
+      apiCallTime
+    };
+    sessionStorage.setItem(PLAYGROUND_STATE_KEY, JSON.stringify(stateToSave));
+  }, [activeTab, urlInput, scrapedPages, activePageIndex, activeResultTab, submittedUrl, apiCallTime]);
 
   /* ---- Refs ---- */
   const pollingActiveRef = useRef(false);
+  const startTimeRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (isLoading) {
+      startTimeRef.current = Date.now();
+      setApiCallTime(null);
+    } else if (startTimeRef.current !== null) {
+      setApiCallTime(Date.now() - startTimeRef.current);
+      startTimeRef.current = null;
+    }
+  }, [isLoading]);
 
   /* ---- API hooks ---- */
   const [scrapeRequest] = useAxios<any, any>({
@@ -153,11 +227,11 @@ export default function usePlayground({
     showSuccessMsg: true,
   });
 
-  // const [getContent] = useAxios<any, any>({
-  //   endpoint: "GET_CRAWL_CONTENT",
-  //   hideErrorMsg: true,
-  // });
-
+  const [screenshotRequest] = useAxios<any, any>({
+    endpoint: "SCREENSHOT",
+    successMsg: "Screenshot generated!",
+    showSuccessMsg: true,
+  });
 
   const ChooseUrl = (name : string) =>{
    switch(name){
@@ -169,6 +243,8 @@ export default function usePlayground({
       return MapRequest;
     case "search":
       return searchRequest;
+    case "screenshot":
+      return screenshotRequest;
    }
   }
 
@@ -207,7 +283,7 @@ export default function usePlayground({
   };
 
   const getButtonText = () => {
-    if (isLoading) return "Scraping...";
+    if (isLoading) return "Processing...";
     switch (activeTab) {
       case "search":
         return "Start search";
@@ -217,6 +293,8 @@ export default function usePlayground({
         return "Generate map";
       case "crawl":
         return "Start crawling";
+      case "screenshot":
+        return "Take screenshot";
     }
   };
 
@@ -327,6 +405,7 @@ export default function usePlayground({
     setActiveResultTab((prev) => {
       if (prev) return prev;
       if (type === "links") return "Links";
+      if (activeTab === "screenshot" && type === "screenshot") return "Screenshot";
       const match = selectedFormats.find(
         (fmt) =>
           fmt.toLowerCase() === type ||
@@ -350,7 +429,7 @@ export default function usePlayground({
   /* -------------------------------------------------------------------------- */
 
   const links = ["map"]
-  const proxy =["map","crawl", "scrape"]
+  const proxy =["map","crawl", "scrape", "screenshot"]
   const All = ["scrape","crawl"]
   const handleRunAction = () => {
     if (!urlInput.trim()) {
@@ -396,12 +475,26 @@ export default function usePlayground({
     const payload : any = {
       url: urlInput.startsWith("http") ? urlInput : `https://${urlInput}`,
     }
-    if (activeTab == "crawl"){
+    if (activeTab === "crawl"){
       payload.crawl= {
         max_pages: crawlMaxPages,
         same_domain_only: crawlSameDomainOnly,
         include_subdomains: crawlIncludeSubdomains
       }
+    }
+    
+    if (activeTab === "screenshot") {
+      payload.screenshot = {
+        enabled: true,
+        full_page: screenshotFullPage,
+        format: screenshotFormat,
+        quality: screenshotQuality,
+        js_render: jsRender,
+        render_timeout: renderTimeout,
+        auto_scroll: autoScroll,
+        scroll_delay: scrollDelay,
+        max_scrolls: maxScrolls,
+      };
     }
     if (proxy.includes(activeTab)) {
      payload.proxy= {
@@ -468,7 +561,7 @@ export default function usePlayground({
             res.crawl_id;
           if (jobId) {
             addLog(`Asynchronous task registered. Job ID: ${jobId}`);
-            if (activeTab === "crawl" || activeTab === "scrape" || activeTab === "map") {
+            if (activeTab === "crawl" || activeTab === "scrape" || activeTab === "map" || activeTab === "screenshot") {
               startWebSocket(jobId);
             } else {
               // fetchResultsFromPaths(jobId);
@@ -507,6 +600,8 @@ export default function usePlayground({
 
             if (activeTab === "map") {
               setActiveResultTab("Links");
+            } else if (activeTab === "screenshot") {
+              setActiveResultTab("Screenshot");
             } else if (selectedFormats.length > 0) {
               const availableFormats = selectedFormats.filter((fmt) => {
                 const key = fmt.toLowerCase();
@@ -637,6 +732,7 @@ export default function usePlayground({
     activeResultTab,
     setActiveResultTab,
     isLoading,
+    apiCallTime,
 
     // Derived helpers
     getActivePage,

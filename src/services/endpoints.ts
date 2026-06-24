@@ -60,6 +60,10 @@ export const endpoints = {
   CONTACTUS:{
     url:"/contact",
     method:methods.post
+  },
+  REPORT_ISSUE:{
+    url:"/report-issue",
+    method:methods.post
   }
 };
 
