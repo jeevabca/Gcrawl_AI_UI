@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import axios from "axios";
-import type {
-  AxiosRequestConfig,
-  AxiosResponse,
-  Method,
-} from "axios";
+import type { AxiosRequestConfig, AxiosResponse, Method } from "axios";
 
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +10,6 @@ import { toast } from "react-hot-toast";
 
 import { endpoints } from "./endpoints";
 import type { endpointType, endpointsType } from "./endpoints";
-
 
 /* -------------------------------------------------------------------------- */
 /*                                AXIOS SETUP                                 */
@@ -73,7 +68,6 @@ export default function useAxios<T = any, R = any>({
   successCb,
   errorCb,
 }: UseAxiosProps<T, R>) {
-
   const navigate = useNavigate();
 
   const isAuthEndpoint = [
@@ -104,9 +98,7 @@ export default function useAxios<T = any, R = any>({
     method = "GET",
     baseURL = undefined,
     withCredentials = undefined,
-  } = endpoint
-      ? (endpoints[endpoint] as endpointType)
-      : {};
+  } = endpoint ? (endpoints[endpoint] as endpointType) : {};
 
   /* -------------------------------------------------------------------------- */
   /*                                   STATES                                   */
@@ -128,7 +120,7 @@ export default function useAxios<T = any, R = any>({
 
   const request = async (
     config?: AxiosConfig<R>,
-    cb?: (resData: T) => void
+    cb?: (resData: T) => void,
   ) => {
     try {
       /* -------------------------------------------------------------------------- */
@@ -141,10 +133,16 @@ export default function useAxios<T = any, R = any>({
 
       setLoading(true);
 
-
       const token = Cookies.get("token");
 
-      const isPublicAction = ["SCRAPE", "CRAWL", "MAP", "SEARCH", "SCREENSHOT", "GET_CRAWL_CONTENT"].includes(endpoint || "");
+      const isPublicAction = [
+        "SCRAPE",
+        "CRAWL",
+        "MAP",
+        "SEARCH",
+        "SCREENSHOT",
+        "GET_CRAWL_CONTENT",
+      ].includes(endpoint || "");
       if (!isAuthEndpoint && !token && !isPublicAction) {
         handleSessionExpiry();
         setLoading(false);
@@ -152,14 +150,23 @@ export default function useAxios<T = any, R = any>({
       }
 
       let recaptchaToken = "";
-      const requiresRecaptcha = ["SCRAPE", "CRAWL", "MAP", "SEARCH", "SCREENSHOT"].includes(endpoint || "");
+      const requiresRecaptcha = [
+        "SCRAPE",
+        "CRAWL",
+        "MAP",
+        "SEARCH",
+        "SCREENSHOT",
+      ].includes(endpoint || "");
       if (!token && requiresRecaptcha) {
         try {
           recaptchaToken = await new Promise<string>((resolve, reject) => {
             if (typeof window !== "undefined" && (window as any).grecaptcha) {
               (window as any).grecaptcha.ready(() => {
                 const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-                (window as any).grecaptcha.execute(siteKey, { action: endpoint?.toLowerCase() || 'action' })
+                (window as any).grecaptcha
+                  .execute(siteKey, {
+                    action: endpoint?.toLowerCase() || "action",
+                  })
                   .then((resToken: string) => {
                     resolve(resToken);
                   })
@@ -180,21 +187,21 @@ export default function useAxios<T = any, R = any>({
       /* -------------------------------------------------------------------------- */
       /*                                  HEADERS                                   */
       /* -------------------------------------------------------------------------- */
-      console.log(config?.isFormData)
-      console.log(token)
-      console.log(recaptchaToken)
+      console.log(config?.isFormData);
+      console.log(token);
+      console.log(recaptchaToken);
       const headers = config?.isFormData
-  ? {
-      ...(config?.headers ?? {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(recaptchaToken ? { "recaptcha-token": recaptchaToken } : {}),
-    }
-  : {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(recaptchaToken ? { "recaptcha-token": recaptchaToken } : {}),
-      ...(config?.headers ?? {}),
-    };
+        ? {
+            ...(config?.headers ?? {}),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(recaptchaToken ? { "recaptcha-token": recaptchaToken } : {}),
+          }
+        : {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(recaptchaToken ? { "recaptcha-token": recaptchaToken } : {}),
+            ...(config?.headers ?? {}),
+          };
 
       /* -------------------------------------------------------------------------- */
       /*                               AXIOS REQUEST                                */
@@ -212,38 +219,36 @@ export default function useAxios<T = any, R = any>({
 
       let requestData = config?.data ?? payload;
       if (recaptchaToken && !config?.isFormData) {
-        if (!requestData || typeof requestData !== 'object') {
+        if (!requestData || typeof requestData !== "object") {
           requestData = {} as R;
         }
-        requestData = { 
-          ...(requestData as object)
+        requestData = {
+          ...(requestData as object),
         } as any;
       }
 
       console.log("SENDING REQUEST WITH HEADERS:", headers);
       console.log("SENDING REQUEST WITH DATA:", requestData);
 
-      const response: AxiosResponse<any> =
-        await axios.request({
-          method: method as Method,
+      const response: AxiosResponse<any> = await axios.request({
+        method: method as Method,
 
-          baseURL,
+        baseURL,
 
-          withCredentials,
+        withCredentials,
 
-          url: url + (config?.path ?? ""),
+        url: url + (config?.path ?? ""),
 
-          signal: controller.current.signal,
+        signal: controller.current.signal,
 
-          timeout: 5 * 60000,
+        timeout: 5 * 60000,
 
-          headers,
+        headers,
 
-          data: requestData,
+        data: requestData,
 
-          ...restConfig,
-        });
-
+        ...restConfig,
+      });
 
       /* -------------------------------------------------------------------------- */
       /*                              SUCCESS HANDLING                              */
@@ -251,18 +256,14 @@ export default function useAxios<T = any, R = any>({
 
       const isSuccess =
         response.status === successStatusCode &&
-        (response.data?.status ??
-          response.data?.result?.status) !== false &&
-        (response.data?.status ??
-          response.data?.result?.status) !== "error" &&
-        (response.data?.status ??
-          response.data?.result?.status) !== "failed";
+        (response.data?.status ?? response.data?.result?.status) !== false &&
+        (response.data?.status ?? response.data?.result?.status) !== "error" &&
+        (response.data?.status ?? response.data?.result?.status) !== "failed";
 
       if (isSuccess) {
         successCb?.();
 
-        const responseData =
-          response?.data || null;
+        const responseData = response?.data || null;
 
         if (cb) {
           cb(responseData);
@@ -273,8 +274,8 @@ export default function useAxios<T = any, R = any>({
         if (showSuccessMsg) {
           toast.success(
             response?.data?.message ??
-            response?.data?.result?.message ??
-            successMsg
+              response?.data?.result?.message ??
+              successMsg,
           );
         }
 
@@ -286,10 +287,7 @@ export default function useAxios<T = any, R = any>({
       /* -------------------------------------------------------------------------- */
 
       if (!hideErrorMsg) {
-        toast.error(
-          response?.data?.message ||
-          "Something went wrong"
-        );
+        toast.error(response?.data?.message || "Something went wrong");
       }
 
       errorCb?.();
@@ -300,8 +298,8 @@ export default function useAxios<T = any, R = any>({
         if (isAuthEndpoint) {
           toast.error(
             error?.response?.data?.message ||
-            error?.response?.data?.title ||
-            "Authentication failed"
+              error?.response?.data?.title ||
+              "Authentication failed",
           );
         } else {
           handleSessionExpiry();
@@ -324,19 +322,16 @@ export default function useAxios<T = any, R = any>({
       /* -------------------------------------------------------------------------- */
 
       if (
-        !["ERR_CANCELED", "ECONNABORTED"].includes(
-          error.code
-        ) &&
+        !["ERR_CANCELED", "ECONNABORTED"].includes(error.code) &&
         !hideErrorMsg
       ) {
         toast.error(
-          (typeof error?.response?.data ===
-            "string"
+          (typeof error?.response?.data === "string"
             ? error?.response?.data
             : error?.response?.data?.message) ||
-          error?.response?.data?.title ||
-          error?.message ||
-          "Something went wrong"
+            error?.response?.data?.title ||
+            error?.message ||
+            "Something went wrong",
         );
       }
 
@@ -356,11 +351,5 @@ export default function useAxios<T = any, R = any>({
   /*                                   RETURN                                   */
   /* -------------------------------------------------------------------------- */
 
-  return [
-    request,
-    data,
-    loading,
-    setData,
-    setLoading,
-  ] as const;
+  return [request, data, loading, setData, setLoading] as const;
 }

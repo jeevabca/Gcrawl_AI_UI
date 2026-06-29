@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { RiMarkdownFill, RiCodeSSlashLine, RiScreenshot2Line, RiImage2Line } from "react-icons/ri";
 import { TbSeo } from "react-icons/tb";
-import { useTheme } from "../../../utils/theme";
+
 
 export type FormatType = "Markdown" | "HTML" | "Screenshot" | "Images" | "SEO";
 
@@ -177,7 +177,6 @@ interface ToggleSwitchProps {
 }
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
-  const { isDarkMode } = useTheme();
   return (
     <button
       type="button"
@@ -186,7 +185,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange }) => {
         width: "36px",
         height: "20px",
         borderRadius: "10px",
-        backgroundColor: checked ? isDarkMode ? "var(--pill-bg)" : "var(--primary)" : "rgba(120, 120, 128, 0.2)",
+        backgroundColor: checked ? "var(--primary)" : "rgba(120, 120, 128, 0.2)",
         border: "none",
         cursor: "pointer",
         position: "relative",
@@ -419,15 +418,15 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
                     <span style={styles.settingsLabel}>Ignore Tags</span>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                       {["header", "footer", "nav", "form", "iframe", ".hidden"].map((tag) => (
-                        <label 
-                          key={tag} 
-                          style={{ 
-                            display: "flex", 
-                            alignItems: "center", 
-                            gap: "4px", 
-                            fontSize: "12px", 
-                            color: "var(--text-primary)", 
-                            cursor: "pointer" 
+                        <label
+                          key={tag}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            fontSize: "12px",
+                            color: "var(--text-primary)",
+                            cursor: "pointer"
                           }}
                         >
                           <input
@@ -473,13 +472,13 @@ export const FormatPopup: React.FC<FormatPopupProps> = ({
               borderRadius: "12px",
               border: "1px solid var(--border-color)",
             }} onClick={(e) => e.stopPropagation()}>
-              
+
               {/* Left Column: Screenshot Config */}
               <div style={{ flex: "1 1 260px", display: "flex", flexDirection: "column", gap: "12px" }}>
                 <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>
                   Screenshot Config
                 </div>
-                
+
                 <div style={styles.settingsRow}>
                   <span style={styles.settingsLabel}>Full Page Screenshot</span>
                   <ToggleSwitch checked={screenshotFullPage} onChange={setScreenshotFullPage} />

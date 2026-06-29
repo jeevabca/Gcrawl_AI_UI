@@ -295,7 +295,7 @@
 /* Premium Card Panel container */
 .playground-card {
   position: relative;
-  z-index: 5;
+  z-index: 100;
   width: 100%;
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);

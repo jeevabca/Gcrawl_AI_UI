@@ -11,7 +11,7 @@ export default function ReportIssue({ submittedUrl }: ReportIssueProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const email = Cookies.get("user_email") || "";
   const [form] = Form.useForm();
-  
+
   const [request, , loading] = useAxios<any, any>({
     endpoint: "REPORT_ISSUE",
   });
@@ -23,7 +23,7 @@ export default function ReportIssue({ submittedUrl }: ReportIssueProps) {
       issue_related_to: values.issue_related_to ? [values.issue_related_to] : [],
       explanation: values.explanation,
     };
-    
+
     const res = await request({ data: payload });
     if (res && res.status !== "error" && res.status !== "failed") {
       message.success("Issue reported successfully!");
@@ -36,7 +36,7 @@ export default function ReportIssue({ submittedUrl }: ReportIssueProps) {
 
   if (!isExpanded) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
         <Button type="default" danger onClick={() => setIsExpanded(true)}>
           Report Issue
         </Button>
@@ -45,10 +45,10 @@ export default function ReportIssue({ submittedUrl }: ReportIssueProps) {
   }
 
   return (
-    <div style={{ 
-      backgroundColor: '#fff', 
-      padding: '20px', 
-      borderRadius: '8px', 
+    <div style={{
+      backgroundColor: '#fff',
+      padding: '20px',
+      borderRadius: '8px',
       border: '1px solid #f0f0f0',
       marginBottom: '20px',
       boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
@@ -57,7 +57,7 @@ export default function ReportIssue({ submittedUrl }: ReportIssueProps) {
         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>Report an Issue</h3>
         <Button type="text" onClick={() => setIsExpanded(false)}>Cancel</Button>
       </div>
-      
+
       <Form layout="vertical" form={form} onFinish={onFinish}>
         <Form.Item
           label="Issue Related To"
@@ -66,7 +66,7 @@ export default function ReportIssue({ submittedUrl }: ReportIssueProps) {
         >
           <Input placeholder="e.g. Scrape accuracy, Timeout, Formatting" />
         </Form.Item>
-        
+
         <Form.Item
           label="Explanation"
           name="explanation"
@@ -74,7 +74,7 @@ export default function ReportIssue({ submittedUrl }: ReportIssueProps) {
         >
           <Input.TextArea rows={4} placeholder="Describe the issue you encountered..." />
         </Form.Item>
-        
+
         <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
           <Button type="primary" htmlType="submit" loading={loading} danger>
             Submit Report

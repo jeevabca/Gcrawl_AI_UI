@@ -65,10 +65,10 @@ export default function usePlayground({
     try {
       const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
       if (saved) return JSON.parse(saved).activeTab || "scrape";
-    } catch(e) {}
+    } catch (e) { }
     return "scrape";
   });
-  
+
   const [urlInput, setUrlInput] = useState(() => {
     if (stateUrl) return stateUrl.replace(/^(https?:\/\/)/i, "");
     try {
@@ -76,7 +76,7 @@ export default function usePlayground({
       if (saved && JSON.parse(saved).urlInput !== undefined) {
         return JSON.parse(saved).urlInput;
       }
-    } catch(e) {}
+    } catch (e) { }
     return "";
   });
 
@@ -128,7 +128,7 @@ export default function usePlayground({
     ".hidden",
   ]);
 
-  const [screenshotFullPage, setScreenshotFullPage] = useState(true);
+  const [screenshotFullPage, setScreenshotFullPage] = useState(false);
   const [screenshotFormat, setScreenshotFormat] = useState<"jpg" | "png">(
     "jpg"
   );
@@ -139,21 +139,21 @@ export default function usePlayground({
     try {
       const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
       if (saved) return JSON.parse(saved).scrapedPages || [];
-    } catch(e) {}
+    } catch (e) { }
     return [];
   });
   const [activePageIndex, setActivePageIndex] = useState<number>(() => {
     try {
       const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
       if (saved) return JSON.parse(saved).activePageIndex || 0;
-    } catch(e) {}
+    } catch (e) { }
     return 0;
   });
   const [activeResultTab, setActiveResultTab] = useState<string>(() => {
     try {
       const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
       if (saved) return JSON.parse(saved).activeResultTab || "";
-    } catch(e) {}
+    } catch (e) { }
     return "";
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -161,7 +161,7 @@ export default function usePlayground({
     try {
       const saved = sessionStorage.getItem(PLAYGROUND_STATE_KEY);
       if (saved) return JSON.parse(saved).submittedUrl || "";
-    } catch(e) {}
+    } catch (e) { }
     return "";
   });
   const [apiCallTime, setApiCallTime] = useState<number | null>(() => {
@@ -170,7 +170,7 @@ export default function usePlayground({
       if (saved && JSON.parse(saved).apiCallTime !== undefined) {
         return JSON.parse(saved).apiCallTime;
       }
-    } catch(e) {}
+    } catch (e) { }
     return null;
   });
 
@@ -215,7 +215,7 @@ export default function usePlayground({
     showSuccessMsg: true,
   });
 
-   const [MapRequest] = useAxios<any, any>({
+  const [MapRequest] = useAxios<any, any>({
     endpoint: "MAP",
     successMsg: "Map registered!",
     showSuccessMsg: true,
@@ -233,19 +233,19 @@ export default function usePlayground({
     showSuccessMsg: true,
   });
 
-  const ChooseUrl = (name : string) =>{
-   switch(name){
-    case "scrape":
-      return scrapeRequest;
-    case "crawl":
-      return crawlRequest;
-    case "map":
-      return MapRequest;
-    case "search":
-      return searchRequest;
-    case "screenshot":
-      return screenshotRequest;
-   }
+  const ChooseUrl = (name: string) => {
+    switch (name) {
+      case "scrape":
+        return scrapeRequest;
+      case "crawl":
+        return crawlRequest;
+      case "map":
+        return MapRequest;
+      case "search":
+        return searchRequest;
+      case "screenshot":
+        return screenshotRequest;
+    }
   }
 
   /* -------------------------------------------------------------------------- */
@@ -429,8 +429,8 @@ export default function usePlayground({
   /* -------------------------------------------------------------------------- */
 
   const links = ["map"]
-  const proxy =["map","crawl", "scrape", "screenshot"]
-  const All = ["scrape","crawl"]
+  const proxy = ["map", "crawl", "scrape", "screenshot"]
+  const All = ["scrape", "crawl"]
   const handleRunAction = () => {
     if (!urlInput.trim()) {
       toast("Please enter a URL to analyze!", { icon: "⚠️" });
@@ -439,7 +439,7 @@ export default function usePlayground({
     setIsLoading(true);
     setScrapedPages([]);
     setActiveResultTab("");
-    pollingActiveRef.current = false; 
+    pollingActiveRef.current = false;
     const finalUrl = urlInput.startsWith("http") ? urlInput : `https://${urlInput}`;
     setSubmittedUrl(finalUrl);
     addLog(`Initiating request: ${urlInput}...`);
@@ -472,17 +472,17 @@ export default function usePlayground({
       return;
     }
 
-    const payload : any = {
+    const payload: any = {
       url: urlInput.startsWith("http") ? urlInput : `https://${urlInput}`,
     }
-    if (activeTab === "crawl"){
-      payload.crawl= {
+    if (activeTab === "crawl") {
+      payload.crawl = {
         max_pages: crawlMaxPages,
         same_domain_only: crawlSameDomainOnly,
         include_subdomains: crawlIncludeSubdomains
       }
     }
-    
+
     if (activeTab === "screenshot") {
       payload.screenshot = {
         enabled: true,
@@ -497,54 +497,52 @@ export default function usePlayground({
       };
     }
     if (proxy.includes(activeTab)) {
-     payload.proxy= {
-        geo: proxyGeo 
+      payload.proxy = {
+        geo: proxyGeo
       }
     }
-    if(links.includes(activeTab))
-      {
-        payload.links={
-          limit: mapLimit,
-          same_domain_only: mapSameDomainOnly,
-          include_subdomains: mapIncludeSubdomains
-        }
+    if (links.includes(activeTab)) {
+      payload.links = {
+        limit: mapLimit,
+        same_domain_only: mapSameDomainOnly,
+        include_subdomains: mapIncludeSubdomains
       }
-    if(All.includes(activeTab))
-    {
+    }
+    if (All.includes(activeTab)) {
 
-      payload.markdown= {
+      payload.markdown = {
         enabled: selectedFormats.includes("Markdown"),
         clean: markdownClean,
       },
-      payload.html= {
-        enabled: selectedFormats.includes("HTML"),
-        clean: htmlClean,
-        remove_external_links: removeExternalLinks,
-        relative_to_absolute_links: relativeToAbsoluteLinks,
-        remove_data_images: removeDataImages,
-        ignore_tags: ignoreTags,
-      },
-      payload.screenshot= {
-        enabled: selectedFormats.includes("Screenshot"),
-        full_page: screenshotFullPage,
-        format: screenshotFormat,
-        quality: screenshotQuality,
-        js_render: jsRender,
-        render_timeout: renderTimeout,
-        auto_scroll: autoScroll,
-        scroll_delay: scrollDelay,
-        max_scrolls: maxScrolls,
-      },
-      payload.seo= {
-        enabled: selectedFormats.includes("SEO"),
-      },
-      payload.images= {
-        enabled: selectedFormats.includes("Images"),
-      }
+        payload.html = {
+          enabled: selectedFormats.includes("HTML"),
+          clean: htmlClean,
+          remove_external_links: removeExternalLinks,
+          relative_to_absolute_links: relativeToAbsoluteLinks,
+          remove_data_images: removeDataImages,
+          ignore_tags: ignoreTags,
+        },
+        payload.screenshot = {
+          enabled: selectedFormats.includes("Screenshot"),
+          full_page: screenshotFullPage,
+          format: screenshotFormat,
+          quality: screenshotQuality,
+          js_render: jsRender,
+          render_timeout: renderTimeout,
+          auto_scroll: autoScroll,
+          scroll_delay: scrollDelay,
+          max_scrolls: maxScrolls,
+        },
+        payload.seo = {
+          enabled: selectedFormats.includes("SEO"),
+        },
+        payload.images = {
+          enabled: selectedFormats.includes("Images"),
+        }
     }
 
     console.log("Payload", JSON.stringify(payload, null, 2));
-    const requestHook : any= ChooseUrl(activeTab)
+    const requestHook: any = ChooseUrl(activeTab)
 
     addLog(`Posting extraction request to backend...`);
     requestHook({
@@ -590,8 +588,8 @@ export default function usePlayground({
                 activeTab === "map" && !actualData.links
                   ? JSON.stringify(actualData, null, 2)
                   : typeof actualData.links === "object"
-                  ? JSON.stringify(actualData.links, null, 2)
-                  : actualData.links,
+                    ? JSON.stringify(actualData.links, null, 2)
+                    : actualData.links,
             };
             console.log("MAPPED SINGLE PAGE:", singlePage);
             setScrapedPages([singlePage]);

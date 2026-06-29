@@ -12,8 +12,6 @@ import {
   FiCopy,
   FiDownload,
   FiCamera,
-  FiEye,
-  FiEyeOff,
 } from "react-icons/fi";
 import { FaRegFileCode, FaBug, FaCode } from "react-icons/fa6";
 import { LiaLinkSolid } from "react-icons/lia";
@@ -21,8 +19,6 @@ import { LiaLinkSolid } from "react-icons/lia";
 import MapPopup from "./map/mappopup";
 import MapUI from "./map/map";
 import ImageGallery from "./images/image";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import SeoViewer from "./seo/seo";
 import SearchPopup from "./search/searchpopup";
 import SearchUI from "./search/search";
@@ -57,7 +53,6 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
 
   const [activeTab, setActiveTab] = useState<string>(availableTabs[0] || "JSON");
   const [hasManuallySelected, setHasManuallySelected] = useState(false);
-  const [showMarkdownPreview, setShowMarkdownPreview] = useState(false);
 
   const isAuthenticated = !!Cookies.get("token");
 
@@ -190,62 +185,38 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
         alignItems: 'center'
       }}>
         <div style={{ display: 'flex', gap: '16px' }}>
-        {availableTabs.map((tab) => {
-          const isActive = activeTab === tab;
-          return (
-            <button
-              key={tab}
-              onClick={() => {
-                setActiveTab(tab);
-                setHasManuallySelected(true);
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '12px 4px',
-                border: 'none',
-                borderBottom: isActive ? '2px solid var(--primary)' : '2px solid transparent',
-                backgroundColor: 'transparent',
-                fontSize: '14px',
-                fontWeight: 600,
-                color: isActive ? 'var(--primary)' : '#4b5563',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
-            >
-              {tab === "Markdown" && <FaCode size={14} />}
-              {tab === "HTML" && <FaRegFileCode size={14} />}
-              {tab === "JSON" && <FiFile size={14} />}
-              <span>{tab}</span>
-            </button>
-          );
-        })}
+          {availableTabs.map((tab) => {
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => {
+                  setActiveTab(tab);
+                  setHasManuallySelected(true);
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '12px 4px',
+                  border: 'none',
+                  borderBottom: isActive ? '2px solid var(--primary)' : '2px solid transparent',
+                  backgroundColor: 'transparent',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: isActive ? 'var(--primary)' : '#4b5563',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {tab === "Markdown" && <FaCode size={14} />}
+                {tab === "HTML" && <FaRegFileCode size={14} />}
+                {tab === "JSON" && <FiFile size={14} />}
+                <span>{tab}</span>
+              </button>
+            );
+          })}
         </div>
-        
-        {activeTab === "Markdown" && (
-          <button
-            onClick={() => setShowMarkdownPreview(!showMarkdownPreview)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              background: showMarkdownPreview ? "#f3f4f6" : "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "6px",
-              padding: "4px 10px",
-              fontSize: "12px",
-              fontWeight: 600,
-              color: "#374151",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-            }}
-          >
-            {showMarkdownPreview ? <FiEyeOff size={14} /> : <FiEye size={14} />}
-            <span>{showMarkdownPreview ? "Raw Markdown" : "Live Preview"}</span>
-          </button>
-        )}
       </div>
 
       {/* Content Display */}
@@ -259,15 +230,15 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
           overflowY: 'auto'
         }}>
           {!isAuthenticated ? (
-            <div style={{ position: 'relative', overflow: 'hidden', maxHeight: '350px' }}>
+            <div style={{ position: 'relative', overflow: 'hidden', minHeight: '300px', maxHeight: '350px' }}>
               {activeTab === "Screenshot" ? (
                 getTabContent() ? (
                   <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                     <div style={{ maxWidth: '100%', maxHeight: '350px', overflow: 'hidden', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                      <img 
-                        src={getTabContent()} 
-                        alt="Screenshot" 
-                        style={{ display: 'block', maxWidth: '100%', height: 'auto' }} 
+                      <img
+                        src={getTabContent()}
+                        alt="Screenshot"
+                        style={{ display: 'block', maxWidth: '100%', height: 'auto' }}
                       />
                     </div>
                   </div>
@@ -279,25 +250,17 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
               ) : activeTab === "SEO" ? (
                 <SeoViewer page={page} />
               ) : activeTab === "Markdown" ? (
-                showMarkdownPreview ? (
-                  <div className="markdown-prose-container" style={{ textAlign: "left" }}>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {getTabContent()}
-                    </ReactMarkdown>
-                  </div>
-                ) : (
-                  <pre style={{
-                    margin: 0,
-                    padding: 0,
-                    backgroundColor: 'transparent',
-                    color: '#374151',
-                    fontSize: '13px',
-                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-                    whiteSpace: 'pre-wrap',
-                  }}>
-                    <code>{getTabContent()}</code>
-                  </pre>
-                )
+                <pre style={{
+                  margin: 0,
+                  padding: 0,
+                  backgroundColor: 'transparent',
+                  color: '#374151',
+                  fontSize: '13px',
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  whiteSpace: 'pre-wrap',
+                }}>
+                  <code>{getTabContent()}</code>
+                </pre>
               ) : (
                 <pre style={{
                   margin: 0,
@@ -311,7 +274,7 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
                   <code>{getTabContent()}</code>
                 </pre>
               )}
-              
+
               {/* Blur and Fade Overlay */}
               <div style={{
                 position: 'absolute',
@@ -343,7 +306,7 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
                   <div style={{ color: '#4b5563', fontSize: '14px', maxWidth: '420px', lineHeight: '1.5' }}>
                     Make a free account to access the complete {activeTab.toLowerCase()} output and all playground features. No credit card required.
                   </div>
-                  <button 
+                  <button
                     onClick={() => navigate('/auth/signup')}
                     style={{
                       backgroundColor: '#064a91',
@@ -359,11 +322,11 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
                       boxShadow: '0 4px 12px rgba(234, 88, 12, 0.25)'
                     }}
                     onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = '#064a91';
+                      e.currentTarget.style.backgroundColor = '#053f7c';
                       e.currentTarget.style.transform = 'translateY(-1px)';
                     }}
                     onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = '#4ea5ff';
+                      e.currentTarget.style.backgroundColor = '#064a91';
                       e.currentTarget.style.transform = 'translateY(0)';
                     }}
                   >
@@ -377,10 +340,10 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
               getTabContent() ? (
                 <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                   <div style={{ maxWidth: '100%', maxHeight: '500px', overflow: 'auto', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-                    <img 
-                      src={getTabContent()} 
-                      alt="Screenshot" 
-                      style={{ display: 'block', maxWidth: '100%', height: 'auto' }} 
+                    <img
+                      src={getTabContent()}
+                      alt="Screenshot"
+                      style={{ display: 'block', maxWidth: '100%', height: 'auto' }}
                     />
                   </div>
                 </div>
@@ -392,26 +355,18 @@ function PageResultCard({ page, index, submittedUrl, getHostname }: PageResultCa
             ) : activeTab === "SEO" ? (
               <SeoViewer page={page} />
             ) : activeTab === "Markdown" ? (
-              showMarkdownPreview ? (
-                <div className="markdown-prose-container" style={{ textAlign: "left" }}>
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {getTabContent()}
-                  </ReactMarkdown>
-                </div>
-              ) : (
-                <pre style={{
-                  margin: 0,
-                  padding: 0,
-                  backgroundColor: 'transparent',
-                  color: '#374151',
-                  fontSize: '13px',
-                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-                  overflowX: 'auto',
-                  whiteSpace: 'pre-wrap'
-                }}>
-                  <code>{getTabContent()}</code>
-                </pre>
-              )
+              <pre style={{
+                margin: 0,
+                padding: 0,
+                backgroundColor: 'transparent',
+                color: '#374151',
+                fontSize: '13px',
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                overflowX: 'auto',
+                whiteSpace: 'pre-wrap'
+              }}>
+                <code>{getTabContent()}</code>
+              </pre>
             ) : (
               <pre style={{
                 margin: 0,
@@ -673,14 +628,14 @@ export default function Playground(props: PlaygroundProps = {}) {
             <h1 className="dashboard-title" style={{ textTransform: "capitalize" }}>
               {activeTab === "search" ? "Search the web" :
                 activeTab === "scrape" ? "Scrape a web page" :
-                    activeTab === "map" ? "Map website links" :
-                      "Crawl entire website"}
+                  activeTab === "map" ? "Map website links" :
+                    "Crawl entire website"}
             </h1>
             <p className="dashboard-subtitle">
               {activeTab === "search" ? "Search the web using a text query." :
                 activeTab === "scrape" ? "Scrape and convert any URL into clean structured LLM-ready data." :
-                    activeTab === "map" ? "Map out and index all accessible links in a site in seconds." :
-                      activeTab === "screenshot" ? "Take a screenshot of any website." :
+                  activeTab === "map" ? "Map out and index all accessible links in a site in seconds." :
+                    activeTab === "screenshot" ? "Take a screenshot of any website." :
                       "Recursively crawl all pages in a domain and extract clean structured datasets."}
             </p>
           </div>
@@ -786,7 +741,7 @@ export default function Playground(props: PlaygroundProps = {}) {
 
           {/* Bottom Control Row */}
 
-          
+
           <div className="card-controls-row">
             <div className="controls-left-group" style={{ position: "relative" }}>
               {/* Settings Toggle Sliders */}
@@ -842,7 +797,7 @@ export default function Playground(props: PlaygroundProps = {}) {
               />
 
               {/* Format Dropdown Selector */}
-              
+
               <div className="format-dropdown-wrapper">
                 {activeTab !== "search" && activeTab !== "map" && activeTab !== "screenshot" && (
                   <button
@@ -955,23 +910,7 @@ export default function Playground(props: PlaygroundProps = {}) {
                   <span>{scrapedPages.length > 0 ? Math.min(scrapedPages.length, crawlMaxPages) : 0} / {crawlMaxPages}</span>
                 </div>
               )}
-              {apiCallTime !== null && !isLoading && (
-                <div style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  padding: "4px 10px",
-                  backgroundColor: "rgba(16, 185, 129, 0.08)",
-                  border: "1px solid rgba(16, 185, 129, 0.2)",
-                  borderRadius: "8px",
-                  color: "#10b981",
-                  fontWeight: 700,
-                  fontSize: "12px",
-                }}>
-                  <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.5px", opacity: 0.8 }}>Time:</span>
-                  <span>{(apiCallTime / 1000).toFixed(2)}s</span>
-                </div>
-              )}
+
               <button
                 className="action-trigger-btn"
                 onClick={handleRunAction}
@@ -991,23 +930,39 @@ export default function Playground(props: PlaygroundProps = {}) {
             <Loader />
             <div className="loading-details" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
               <div className="loading-main-label" style={{ fontSize: "16px", fontWeight: 700 }}>
-                {activeTab === "crawl" ? "Crawling Site..." : 
-                 activeTab === "search" ? "Searching the Web..." :
-                 activeTab === "screenshot" ? "Taking Screenshot..." :
-                 activeTab === "map" ? "Mapping Site Links..." : "Scraping URL..."}
+                {activeTab === "crawl" ? "Crawling Site..." :
+                  activeTab === "search" ? "Searching the Web..." :
+                    activeTab === "screenshot" ? "Taking Screenshot..." :
+                      activeTab === "map" ? "Mapping Site Links..." : "Scraping URL..."}
               </div>
               <div className="loading-sub-log">Connecting to agent and running requested extraction formats...</div>
             </div>
           </div>
         )}
 
-        {/* REPORT ISSUE */}
+        {/* REPORT ISSUE & TIMER */}
         {!isLoading && scrapedPages.length > 0 && (
-           <div style={{ display: 'flex', width: '160%', marginTop: '24px' }}>
-             <div style={{ width: '100%' }}>
-                <ReportIssue submittedUrl={submittedUrl} />
-             </div>
-           </div>
+          <div style={{ display: 'flex', marginTop: '24px', gap: '12px', justifyContent: 'flex-end', width: '160%' }}>
+
+            {apiCallTime !== null && apiCallTime !== undefined && (
+              <div style={{
+                display: "flex",
+                justifyContent: 'flex-start',
+                marginBottom: '10px',
+                backgroundColor: "#f3f4f6",
+                padding: "6px 12px",
+                borderRadius: "8px",
+                color: "#2e3432",
+                fontWeight: 700,
+                fontSize: "13px",
+              }}>
+                <span style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.5px", opacity: 0.8 }}>Time:</span>
+                <span>{(apiCallTime / 1000).toFixed(2)}s</span>
+
+              </div>
+            )}
+            <ReportIssue submittedUrl={submittedUrl} />
+          </div>
         )}
 
         {/* RESULTS CARD FEED */}

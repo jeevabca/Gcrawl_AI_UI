@@ -64,11 +64,11 @@ function imageDownloadProxy(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    react(), 
+    react(),
     imageDownloadProxy(),
     ssgPlugin({
       // Point this to your pages directory or a specific file
-      pages: ['src/page/components/landing/landing.tsx'], 
+      pages: ['src/page/components/landing/landing.tsx'],
       // Put your SSG options here instead of the root `ssgOptions`
       config: {
         outDir: 'dist/static',
